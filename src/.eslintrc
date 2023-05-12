@@ -1,0 +1,32 @@
+{
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "globals": {
+      "app": "readonly",
+      "read": "readonly",
+      "readbuffer": "readonly",
+      "globalThis": "readonly",
+      "scriptArgs": "readonly",
+      "quit": "readonly",
+      "print": "readonly",
+      "printErr": "readonly",
+      "self": "readonly",
+      "define": "readonly"
+    },
+    "rules": {
+      "no-restricted-globals": [
+        "error",
+        {
+          "name": "self",
+          "message": "Use 'globalThis' or 'window' instead of 'self'"
+        },
+        {
+          "name": "print",
+          "message": "Use 'console.log' instead of 'print'"
+        }
+      ]
+    }
+  }
+  

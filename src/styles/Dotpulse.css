@@ -1,0 +1,41 @@
+@keyframes dotPulse {
+    0% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.5;
+    }
+  }
+  
+  .thinking-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .thinking-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #007bff;
+    border-radius: 50%;
+    margin: 0 3px;
+    animation: dotPulse 1s infinite;
+  }
+  
+  .thinking-dot-2 {
+    animation-delay: 0.2s;
+  }
+  
+  .thinking-dot-3 {
+    animation-delay: 0.4s;
+  }
+  
+  .thinking-animation-container {
+    height: 1.2em;
+    line-height: 1.2em;
+    display: flex;
+    align-items: center;
+  }

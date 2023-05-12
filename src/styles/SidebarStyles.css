@@ -1,0 +1,316 @@
+.sidebar {
+  background-color: #2c3e50;
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sidebar h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.token-info {
+  font-size: 14px;
+  margin-bottom: 1rem;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.token-info-title {
+  font-weight: bold;
+  display: inline-block;
+}
+
+.main-buttons {
+  width: 100%;
+}
+
+.button-container {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 1rem;
+  width: 100%;
+}
+
+.sidebar-button {
+  display: block;
+  align-items: center;
+  font-size: 16px;
+  padding: 0.8rem 1.2rem;
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 1px;
+  transition: background-color 0.2s ease;
+  width: 100%; /* Add this to highlight the whole row */
+  margin-top: 0rem; /* Adjust the margin-top */
+  margin-bottom: 0rem; /* Adjust the margin-bottom */
+  box-sizing: border-box;
+}
+
+.sidebar-button i {
+  margin-right: 0.5rem;
+}
+
+.connection-status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: 10px;
+}
+
+.connection-status-disconnected {
+  background-color: #ff5f5f;
+}
+
+.connection-status-connecting,
+.connection-status-waiting_reconnect {
+  background-color: #ffab5f;
+}
+
+.connection-status-connected {
+  background-color: #5fff5f;
+}
+
+.connection-status-default {
+  background-color: #808080;
+}
+
+
+
+.icon-space {
+  margin-right: 8px;
+}
+
+.sidebar-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+.top-up-button:hover {
+  background-color: #4a90e2;
+}
+
+.help-icon {
+  font-size: 12px;
+  background-color: #34495e;
+  padding: 0.2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-block;
+  margin-left: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.help-icon:hover {
+  background-color: #4a90e2;
+}
+
+.help-icon {
+  font-size: 12px;
+  background-color: #34495e;
+  padding: 0.2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline;
+  margin-left: 4px;
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0rem;
+  padding-left: 1.5rem; /* Add this line to indent the sub-buttons */
+}
+
+.sidebar-button.export-html,
+.sidebar-button.export-nostr {
+  margin-top: 0.5rem;
+  font-size: 14px;
+  padding: 0.25rem 0.5rem;
+}
+
+.logo {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight:normal;
+  margin-top: 0; /* Adjust this value to move the string higher */
+}
+
+.logo b {
+  font-weight:bolder;
+}
+
+/* Add these new CSS rules */
+.progress-bar-container {
+  background-color: #ccc;
+  height: 10px;
+  width: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.progress-bar {
+  height: 100%;
+}
+
+.progress-bar-description {
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.progress-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  margin-top: 5px;
+}
+
+/* Add this new CSS rule */
+.progress-bar-container.red {
+  background-color: red;
+}
+
+
+.label-container {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.min-label {
+  color: red;
+}
+
+.max-label {
+  color: green;
+}
+
+.min-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #2c3e50;
+  z-index: 1;
+}
+
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* Adjust the position of the tooltip */
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.dark-mode-icon {
+  position: absolute;
+  top: 10px;
+  left: 20px; /* Adjust this value to position the icon from the left edge */
+  font-size: 0.8rem;
+}
+
+.status-title {
+  font-weight: 550;
+  font-size: 14px;
+  color: #333333;
+  margin-bottom: 1px;
+  display: inline-block;
+  background-color: #2c3e50;
+  color: #ffffff;
+  padding: 0px 0px;
+}
+
+
+.bottom-icons {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  padding-bottom: 0rem;
+  margin-top: auto;
+}
+
+.icon-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+/* Add this to make sure the icon text font size remains the same */
+
+.sidebar-icon {
+  color: white;
+  font-size: 19px;
+}
+
+.separator {
+  width: 90%; /* Adjust the width as needed */
+  height: 1px; /* Thickness of the line */
+  background-color: #ffffff;
+  opacity: 0.5; /* Lower the opacity to make it more subtle */
+  margin: 1rem auto; /* Center the line and add some space around it */
+}
+
+.custom-ostrich-icon {
+  width: 22px;
+  height: 22px;
+  stroke: white;
+  fill: white;
+}
+
+.icon-text {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  background-color: white;
+  color: #2c3e50;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.icon-wrapper:hover .icon-text {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+}
+
+

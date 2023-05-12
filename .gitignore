@@ -17,7 +17,14 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.babelrc
+babel-plugin-macros.config.js
+babel.config.js
+config-overrides.js
+npm-shrinkwrap.json
+

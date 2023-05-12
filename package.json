@@ -1,15 +1,43 @@
 {
   "name": "chatln-frontend",
+  "aproxy": "http://192.168.1.106:8000",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@ngx-share/core": "^7.1.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "browserify-fs": "^1.0.0",
+    "browserify-zlib": "^0.2.0",
+    "buffer": "^6.0.3",
+    "crypto": "npm:crypto-browserify",
+    "crypto-browserify": "^3.12.0",
+    "dompurify": "^3.0.2",
+    "elliptic": "^6.5.4",
+    "lnmessage": "^0.2.1",
+    "lnsocket": "^0.3.2",
+    "net-browserify": "^0.2.4",
+    "node-loader": "^2.0.0",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "qrcode.react": "^3.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-native-tcp-socket": "^6.0.6",
+    "react-router-dom": "^6.10.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "react-syntax-highlighter": "^15.5.0",
+    "socket.io-client": "^4.6.1",
+    "stream": "npm:stream-browserify",
+    "stream-browserify": "^3.0.0",
+    "web-vitals": "^2.1.4",
+    "websocket": "^1.0.34",
+    "websocket-polyfill": "^0.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,5 +62,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "file-loader": "^6.2.0"
   }
 }

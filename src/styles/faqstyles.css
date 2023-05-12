@@ -1,0 +1,23 @@
+.faq-container {
+    width: 80%;
+    margin: auto;
+  }
+  
+  .faq-container details {
+    margin-bottom: 1em;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding: .5em;
+  }
+  
+  .faq-container summary {
+    font-weight: bold;
+    margin: -.5em -.5em 0;
+    padding: .5em;
+  }
+  
+  .faq-container p {
+    padding: .5em;
+    margin: 0;
+  }
+  

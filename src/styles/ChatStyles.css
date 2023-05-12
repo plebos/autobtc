@@ -1,0 +1,511 @@
+.chat-container.dark-mode {
+  background-color: #2c2c2c; /* A dark color, adjust it according to your preference */
+}
+.dark-chat-input {
+  background-color: #5c5c5c;
+  color: #ffffff;
+}
+
+
+.app-container {
+    display: flex;
+    height: 100vh; /* Set the height to 100% of the viewport */
+    width: 100%;
+  }
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: calc(100% - 250px); /* Subtract the sidebar width */
+    padding-left: 250px; /* Add padding equal to the sidebar width */
+  }
+  
+  .chat-messages {
+    flex-grow: 1;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  
+  .chat-input {
+    display: flex;
+    padding: 8px 16px;
+    border: 2px solid #007bff;
+    background-color: #f8f9fa;
+  }
+  
+  .chat-input input {
+    flex-grow: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+  }
+  
+  .chat-input button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .message {
+    max-width: 70%;
+    padding: 8px 16px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .ai-message {
+    text-align: left;
+    background-color: #e9e9eb;
+    margin-left: 30px;
+    position: relative;
+    max-width: 80%; /* Adjust this value to fit the message bubble's width */
+    word-wrap: break-word;
+  }
+  
+  .system-message {
+    background-color: #f1c40f;
+    text-align: left;
+    margin-left: 30px;
+    position: relative;
+    max-width: 80%; /* Adjust this value to fit the message bubble's width */
+    word-wrap: break-word;
+  }
+  
+  .server-message {
+    background-color: #0ff116;
+    text-align: left;
+    margin-left: 30px;
+    position: relative;
+    max-width: 80%; /* Adjust this value to fit the message bubble's width */
+    word-wrap: break-word;
+  }
+
+  .user-message {
+    text-align: left;
+    background-color: #007bff;
+    color: white;
+    margin-left: 30px;
+    position: relative;
+    max-width: 80%; /* Adjust this value to fit the message bubble's width */
+    word-wrap: break-word;
+  }
+  
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: -40px;
+  }
+
+  .token-count {
+    font-size: 10px;
+    color: #666;
+  }
+  
+  
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: -40px;
+  }
+
+  .token-cost, .sats-cost {
+    font-size: 0.8em;
+    color: #666;
+    display: block;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    padding: 3px 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    margin-top: 5px;
+    width: fit-content;
+  }
+  .sats-cost {
+    display: inline-block;
+  }
+
+  .cost-info {
+    font-size: 0.8em;
+    color: #666;
+    display: inline-block;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    padding: 3px 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    margin-top: 5px;
+  }
+  
+  .separator {
+    margin: 0 5px;
+  }
+  
+  .system-chat-input {
+    background-color: #f1c40f !important;
+  }
+  
+  .qr-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  .qr-container:hover {
+    background-color: #f2f2f2;
+  }
+  
+  .copy-text {
+    margin-top: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .beta {
+    font-size: 0.5em; /* Adjust the font size as needed */
+    font-weight: normal; /* Make the "beta" text normal weight */
+    margin-left: 5px; /* Add some space between the logo and "beta" text */
+    vertical-align: top; /* Align the "beta" text with the top of the logo */
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      text-shadow: 0 0 5px transparent;
+    }
+    50% {
+      text-shadow: 0 0 10px #FFD700;
+    }
+  }
+  
+  @keyframes stamp {
+    0% {
+      opacity: 0;
+      transform: translateY(50%) scale(0.1) rotate(-0deg);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(50%) scale(1) rotate(-0deg);
+    }
+  }
+  
+  .glow {
+    animation: glow 1s infinite;
+  }
+  
+  
+  .qr-paid-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .paid .qr-code {
+    opacity: 0.4;
+  }
+
+  .qr-stamp-container {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .stamp {
+    position: absolute;
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #FF0000;
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    animation: stamp 1s linear forwards;
+    top: 18%;
+    left: 27%;
+    border: 2px solid #FF0000;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  
+  .qr-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .copy-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+  }
+  
+  .copy-icon {
+    font-size: 1.2rem;
+    color: #333;
+    margin-right: 5px;
+  }
+  
+  .copy-text {
+    font-size: 0.8rem;
+    color: #333;
+  }
+  
+  .help-link {
+    font-size: 12px;
+    color: #999;
+    cursor: pointer;
+    position: relative;
+    display: inline;
+    text-decoration: underline;
+  }
+  
+  .help-link:hover {
+    color: #333;
+  }
+  
+  .help-link:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position the tooltip */
+    left: 50%;
+    margin-left: -60px; /* Use half of the width (120/2 = 60) to center the tooltip */
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  .code-frame {
+    position: relative;
+    padding:0px;
+    border: px solid #444;
+    border-radius: 10px;
+    background-color: #2c2c2c;
+    color: #f8f8f8;
+    font-family: monospace;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    overflow: auto;
+    max-width: 60%; /* Adjust this value to fit within the message bubble */
+  }
+  
+
+  pre {
+    background: #464545;
+    border: 1px solid #964848;
+    border-left: 4px solid #f36d33;
+    color: #ddd;
+    page-break-inside: avoid;
+    font-family: monospace;
+    font-size: 15px;
+    line-height: 1;
+    margin-bottom: 0em;
+    max-width: 65%;
+    overflow: scroll;
+    padding: 0.2em 1em;
+    display: flex;
+    align-items: center;
+    white-space:break-spaces;
+    word-wrap: break-word;
+  }
+  .actions-container {
+    background-color: #b9acac;
+    padding: 8px;
+    border-radius: 4px;
+    margin-top: 8px;
+    border: 2px solid #b5b5b5; /* Add a border with the desired color */
+    color: #333333; /* Set the text color to a constant value that matches the background */
+  }
+  
+  .actions-header {
+    margin-bottom: 8px;
+  }
+  
+  .actions-header h5 {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: 4px;
+  }
+  
+  .actions-header p {
+    font-size: 0.9em;
+    margin: 0;
+    margin-bottom: 4px;
+  }
+  
+  .actions-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .action-item {
+    background-color: #e0e0e0;
+    padding: 8px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .function-name {
+    font-weight: bold;
+  }
+  
+  .args-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 4px;
+  }
+  
+  .args-list li {
+    font-size: 0.9em;
+  }
+  
+  .args-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 4px;
+  }
+  
+  .args-list li {
+    font-size: 0.9em;
+  }
+  
+  .chat-type-selector {
+    position: absolute;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #2c3e50;
+    padding: 13px;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    font-size: 16px;
+    color: #ffffff;
+    cursor: pointer;
+    user-select: none;
+    min-width: 150px;
+    text-align: center;
+  }
+  
+  .chat-type-selector:hover .chat-type-options {
+    display: block;
+  }
+
+  .chat-type-options {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #2c3e50;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    font-size: 14px;
+    padding: 5px;
+    pointer-events: auto;
+  }
+  
+  .chat-type-option {
+    display: block;
+    padding: 5px 10px;
+    color: #ffffff;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s, visibility 0.2s;
+  }
+  
+  .chat-type-option:hover {
+    background-color: #444444;
+  }
+  
+  .chat-type-container {
+    position: relative;
+  }
+  
+  .extended-hover-area {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding-top:0.5px;
+    pointer-events: none;
+  }
+  
+  .chat-type-selector:after {
+    content: "\25BC";
+    margin-left: 5px;
+  }
+  
+  .images-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .images-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .pricing-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #777;
+  }
+  
+  

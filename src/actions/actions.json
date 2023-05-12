@@ -1,0 +1,408 @@
+{
+    "actions": [
+      {
+        "name": "changeToNormalChatMode",
+        "description": "suggest this action if the user did not ask anything related to lightning but rather a general question",
+        "category": "ux",
+        "args": [],
+        "args_description": [],
+        "frontend_data": {
+          "wrapper_function": "changeModeWrapper",
+          "requires_user_approval": false,
+          "dangerous": false,
+          "avoid_followup": true
+        }, 
+        "unlocked":true
+      },
+      {
+        "name": "getinfo",
+        "description": "Receive all information about the Core Lightning node.",
+        "category": "node",
+        "args": [],
+        "args_description": [],
+        "frontend_data": {
+          "ai_preprocess_function": "preprocess_getinfo",
+          "wrapper_function": "executeCLNCommandWrapper",
+          "requires_user_approval": false,
+          "dangerous": false
+        }, 
+        "unlocked":true
+      },
+          {
+            "name": "help",
+            "description": "Return all information about RPC commands, or a specific command if given.",
+            "category": "node",
+            "args": [
+              {
+                "name": "command",
+                "type": "string",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "A specific command to get detailed help for. If not provided, help for all commands is returned."
+            ],
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": false,
+              "dangerous": false
+            }
+          }, 
+          {
+            "name": "connect",
+            "description": "Establish a new connection with another node in the Lightning Network.",
+            "category": "node",
+            "args": [
+              {
+                "name": "id",
+                "type": "string"
+              },
+              {
+                "name": "host",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "port",
+                "type": "u16",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "The target node's public key (can be of the form id@host or id@host:port).",
+              "The peer's hostname or IP address.",
+              "The port to connect to (depends on the current network if not specified)."
+            ],
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": true,
+              "dangerous": false
+            }
+          }, 
+          {
+            "name": "decode",
+            "description": "Decode an invoice string (low-level).",
+            "category": "node",
+            "subcategory": "invoice/rune",
+            "args": [
+              {
+                "name": "string",
+                "type": "string"
+              }
+            ],
+            "args_description": [
+              "A bolt11 or bolt12 string (optionally prefixed by lightning: or LIGHTNING:) as specified by the BOLT 11 and BOLT 12 specifications, or a rune as created by lightning-commando-rune(7)."
+            ],
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": true,
+              "dangerous": true,
+              "avoid_followup": true
+            },
+            "unlocked":true
+          }, 
+          {
+            "name": "feerates",
+            "description": "Query recommended onchain feerates.",
+            "category": "node",
+            "subcategory": "chain",
+            "args": [
+              {
+                "name": "style",
+                "type": "string"
+              }
+            ],
+            "args_description": [
+              "Either 'perkw' for feerate in units of satoshis per 1000 weight, or 'perkb' for feerate in units of satoshis per 1000 virtual bytes."
+            ],
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": false,
+              "dangerous": false
+            },
+            "unlocked" : true
+          }, 
+          {
+            "name": "invoice",
+            "description": "Crates an invoice to accept payments.",
+            "category": "node",
+            "subcategory": "payments",
+            "args": [
+              {
+                "name": "amount_msat",
+                "type": "string"
+              },
+              {
+                "name": "label",
+                "type": "string"
+              },
+              {
+                "name": "description",
+                "type": "string"
+              },
+              {
+                "name": "expiry",
+                "type": "number",
+                "optional": true
+              },
+              {
+                "name": "fallbacks",
+                "type": "array",
+                "optional": true
+              },
+              {
+                "name": "preimage",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "exposeprivatechannels",
+                "type": "mixed",
+                "optional": true
+              },
+              {
+                "name": "cltv",
+                "type": "number",
+                "optional": true
+              },
+              {
+                "name": "deschashonly",
+                "type": "boolean",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "The amount in millisatoshi precision, or 'any' for an invoice that can be paid with any amount.",
+              "A unique string or number used as a label for the invoice.",
+              "A short description of the purpose of the payment.",
+              "Optional expiry time for the invoice in seconds. Default is 604800 (1 week).",
+              "Optional array of fallback addresses to include in the invoice.",
+              "Optional 64-digit hex string to be used as the payment preimage for the invoice.",
+              "Optional parameter to override default route hint logic.",
+              "Optional parameter to set the min_final_cltv_expiry for the invoice.",
+              "Optional parameter to use a hash of the description in the BOLT11 invoice instead of the description itself."
+            ],
+            "requires_user_approval": false,
+            "dangerous": false,
+            "unlocked": true
+          }, 
+          {
+            "name": "listchannels",
+            "description": "Query active lightning channels in the entire network.",
+            "category": "node",
+            "subcategory": "channels",
+            "args": [
+              {
+                "name": "short_channel_id",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "source",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "destination",
+                "type": "string",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "Optional short channel id to filter results by matching short_channel_id.",
+              "Optional node id to filter results by channels leading from the specified node id.",
+              "Optional node id to filter results by channels leading to the specified node id."
+            ],
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": false,
+              "dangerous": false
+            }
+          }, 
+          {
+            "name": "listforwards",
+            "description": "Show all htlcs and their information.",
+            "category": "node",
+            "subcategory": "channels",
+            "args": [
+              {
+                "name": "status",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "in_channel",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "out_channel",
+                "type": "string",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "Optional status to filter results by htlcs with the given status (offered, settled, failed, or local_failed).",
+              "Optional in_channel to filter results by matching incoming channel.",
+              "Optional out_channel to filter results by matching outgoing channel."
+            ],
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": true,
+              "dangerous": false
+            },
+            "unlocked": true
+          }, 
+          {
+            "name": "listfunds",
+            "description": "Show all funds currently managed by the Core Lightning node.",
+            "category": "node",
+            "subcategory": "wallet",
+            "args": [
+              {
+                "name": "spent",
+                "type": "boolean",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "Optional spent parameter to include spent outputs in addition to unspent ones. Default is false."
+            ],
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": true,
+              "dangerous": false
+            }, 
+            "unlocked":true
+          }, 
+          {
+            "name": "listhtlcs",
+            "description": "Query HTLCs.",
+            "category": "node",
+            "subcategory": "info",
+            "args": [
+              {
+                "name": "id",
+                "type": "string",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "Optional short channel id (e.g. 1x2x3) or full 64-byte hex channel id to list HTLCs for a specific channel."
+            ],
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": true,
+              "dangerous": false
+            }
+          },
+          {
+            "name": "listinvoices",
+            "description": "Query invoice status.",
+            "category": "node",
+            "subcategory": "info",
+            "args": [
+              {
+                "name": "label",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "invstring",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "payment_hash",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "offer_id",
+                "type": "string",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "Optional unique label supplied at invoice creation.",
+              "Optional invstring string representing the invoice.",
+              "Optional payment_hash of the invoice.",
+              "Optional local offer_id this invoice was issued for."
+            ],
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": true,
+              "dangerous": false
+            }
+          },
+          {
+            "name": "listnodes",
+            "description": "Get the list of nodes in the known network.",
+            "category": "node",
+            "subcategory": "info",
+            "args": [
+              {
+                "name": "id",
+                "type": "string",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "Optional node id to get information about a single node."
+            ],
+            "requires_user_approval": false,
+            "dangerous": false
+          },
+          {
+            "name": "listpeerchannels",
+            "description": "Return data on channels of connected lightning nodes.",
+            "category": "node",
+            "subcategory": "info",
+            "args": [
+              {
+                "name": "id",
+                "type": "string",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "Optional node id to filter the channels by a specific node."
+            ],
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": false,
+              "dangerous": false
+            }
+          },
+          {
+            "name": "listpeers",
+            "description": "Return data on connected lightning nodes.",
+            "category": "node",
+            "subcategory": "info",
+            "args": [
+              {
+                "name": "id",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "level",
+                "type": "string",
+                "optional": true
+              }              
+            ],
+            "args_description": [
+              "Optional node id to filter the peers by a specific node.",
+              "Optional log level to show log entries related to the peer(s). Valid log levels are 'io', 'debug', 'info', and 'unusual'."
+            ],
+            "unlocked": true,
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": false,
+              "dangerous": false,
+              "ai_preprocess_function": "preprocess_listpeers"
+            }
+          }
+
+    ]
+  }
