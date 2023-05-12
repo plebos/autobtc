@@ -12,10 +12,9 @@ import userAvatar from '../assets/images/user-avatar.png';
 import systemAvatar from '../assets/images/system-avatar.png';
 import serverAvatar from '../assets/images/system-avatar.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaste, faCoffee, faComment, faQuestion, faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import { faFileAlt ,faPaste, faCoffee,faQuestionCircle, faFingerprint, faTrash, faFileExport, faBolt } from "@fortawesome/free-solid-svg-icons";
 import { faCircleNodes } from "@fortawesome/free-solid-svg-icons";
-import { icon } from '@fortawesome/fontawesome-svg-core/import.macro'
-import { faGithub, faTwitter, faDiscord, faTelegram } from '@fortawesome/free-brands-svg-icons';
+import { faGithub, faTwitter, faTelegram } from '@fortawesome/free-brands-svg-icons';
 import QRCode from 'qrcode.react';
 import DOMPurify from 'dompurify';
 import socket from '../socket.js';
@@ -1088,26 +1087,26 @@ function AutoBTC({ chatMode: initialChatMode }) {
         <div className="button-container">
           <div className="main-buttons">
             <div className="sidebar-button top-up" onClick={enterTopUpMode}>
-              <FontAwesomeIcon icon={icon({ name: 'bolt' })} />
+              <FontAwesomeIcon icon={faBolt} />
               <span className="icon-space"></span>
               Top-up
             </div>
 
 
             <div className="sidebar-button export" onClick={handleExportToggle}>
-              <FontAwesomeIcon icon={icon({ name: 'file-export' })} />
+              <FontAwesomeIcon icon={faFileExport} />
               <span className="icon-space"></span>
               Export
             </div>
             {exportOptionsVisible && (
               <div className="export-options">
                 <div className="sidebar-button export-html" onClick={handleExportHTML}>
-                  <FontAwesomeIcon icon={icon({ name: 'file-alt' })} />
+                  <FontAwesomeIcon icon={faFileAlt} />
                   <span className="icon-space"></span>
                   json
                 </div>
                 <div className="sidebar-button export-nostr" onClick={enterNostrExportMode}>
-                  <FontAwesomeIcon icon={icon({ name: 'file-alt' })} />
+                  <FontAwesomeIcon icon={faFileAlt } />
                   <span className="icon-space"></span>
                   Nostr
                 </div>
@@ -1125,12 +1124,12 @@ function AutoBTC({ chatMode: initialChatMode }) {
               </div>
             </div>
             <div className="sidebar-button restore-uid" onClick={enterRestoreAccountMode}>
-              <FontAwesomeIcon icon={icon({ name: 'fingerprint' })} />
+              <FontAwesomeIcon icon={faFingerprint} />
               <span className="icon-space"></span>
               Restore Account
             </div>
             <div className="sidebar-button github" onClick={handleClearLocalStorage}>
-              <FontAwesomeIcon icon={icon({ name: 'trash' })} />
+              <FontAwesomeIcon icon={faTrash} />
               <span className="icon-space"></span>
               Clear Local Storage
             </div>
