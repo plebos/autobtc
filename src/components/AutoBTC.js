@@ -684,7 +684,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
   }, [messages]);
 
   const handleClearLocalStorage = () => {
-    //localStorage.clear()
+    localStorage.clear()
     fetchUniqueIdAndBalance()
     setSystemMode("")
     setMessages((prevMessages) => [
