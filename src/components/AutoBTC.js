@@ -191,7 +191,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
   const enterTopUpMode = () => {
     setMessages((prevMessages) => [
       ...prevMessages,
-      { sender: 'system', text: `Please enter an amount of sats between 1 and ${balanceLimits.max_balance - balance}` },
+      { sender: 'system', text: `Please enter an amount of sats between ${Math.max(balanceLimits.min_balance - balance, 1)} and ${balanceLimits.max_balance - balance}` },
     ]);
     setSystemMode("topUpMode");
   };
@@ -325,7 +325,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
     setUniqueIdVisible(!uniqueIdVisible);
   };
 
-  const restoreAccount = async (inputUniqueId) => {
+  const restoreAccount = async (inputUniqueId, init=false) => {
     try {
       const response = await fetchUserBalance({
         unique_id: inputUniqueId
@@ -333,6 +333,11 @@ function AutoBTC({ chatMode: initialChatMode }) {
 
       if (response.ok) {
         const data = await response.json();
+
+        if(!init && data.balance == 0) {
+          return false;  
+        }
+
         setUniqueId(inputUniqueId);
         setBalance(data.balance);
         // Send the unique_id to the backend over the WebSocket connection
@@ -360,7 +365,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
     } else {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: 'system', text: 'Error restoring account. Please try again.' },
+        { sender: 'system', text: 'Error restoring account. AutoBTC only remembers accounts with a non-zero sats buffer balance.' },
       ]);
     }
   };
@@ -668,7 +673,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
   useEffect(() => {
     const storedAccountId = localStorage.getItem('accountId');
     if (storedAccountId) {
-      restoreAccount(storedAccountId);
+      restoreAccount(storedAccountId, true);
     } else {
       fetchUniqueIdAndBalance();
     }
@@ -813,17 +818,18 @@ function AutoBTC({ chatMode: initialChatMode }) {
 
 
   const isValidAmount = (amount, balanceLimits, balance, sponsor) => {
-    return !isNaN(amount) && amount >= 1 && (sponsor || (amount <= balanceLimits.max_balance - balance));
-  }
+    const minVal = Math.max(balanceLimits.min_balance - balance, 1);
+    return !isNaN(amount) && (sponsor && amount >= 1 || amount >= minVal) && (sponsor || (amount <= balanceLimits.max_balance - balance));
+}
 
 
   const handleTopUpMode = (sponsor = false) => {
     const amount = sanitizeSatsInput(userPrompt);
-
+    console.log(amount, balanceLimits, balance, sponsor)
     if (!isValidAmount(amount, balanceLimits, balance, sponsor)) {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { sender: 'system', text: 'Invalid amount. Please enter a valid number.' },
+        { sender: 'system', text: 'Invalid amount. Please enter a valid number in the range.' },
       ]);
 
     } else {
@@ -944,7 +950,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
         relayUrlMode: "wss://...",
         useStoredNostrData: "yes/no",
         sponsorMode: "1-∞ sats",
-        topUpMode: `1-${balanceLimits.max_balance - balance} sats`,
+        topUpMode: `${Math.max(balanceLimits.min_balance - balance, 1)}-${balanceLimits.max_balance - balance} sats`,
         connectNodeMode: "CLN/LND/LDK",
         connectCLNModeIP: "034d72cdecda17e7a3fb085345d8b6391429fcd4066ddded183a84d765208f1973@198.46.215.52:37710",
         connectCLNModeID: "021c97a90a411ff2b10dc2a8e32de2f29d2fa49d41bfbb52bd416e460db0747d0d",

@@ -42,6 +42,8 @@ export const splitIpPort = (ipPort) => {
 
 export const sanitizeSatsInput = (userPrompt) => {
   const satsRegex = /(\d+)(?:\s*(sats|sat))?$/i;
-  const match = userPrompt.match(satsRegex);
+  // Remove any spaces in the input
+  const sanitizedInput = userPrompt.replace(/\s+/g, '');
+  const match = sanitizedInput.match(satsRegex);
   return match ? parseInt(match[1], 10) : 0;
 }
