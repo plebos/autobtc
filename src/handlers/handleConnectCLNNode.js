@@ -4,7 +4,7 @@ import { generateKeyPair } from '../utils/utils';
 import { clnNodeMessages } from './messages/clnNodeMessages';
 import { parseNodeIdIpPort } from '../utils/utils';
 
-const handleConnectCLNNode = ({stage, systemMode, setSystemMode, LNnodeIPPort, setLNnodeIPPort, LNnodeID, setLNnodeID, LNNodeRune, setLNnodeRune, messages, setMessages, userPrompt}) => {
+const handleConnectCLNNode = ({stage, systemMode, setSystemMode, LNnodeIPPort, setLNnodeIPPort, LNnodeID, setLNnodeID, LNNodeRune, setLNnodeRune, messages, setMessages, userPrompt, lnConnection, setLnConnection}) => {
   let messageText = '';
 
   if (stage === 1) {
@@ -38,7 +38,20 @@ const handleConnectCLNNode = ({stage, systemMode, setSystemMode, LNnodeIPPort, s
       setLNnodeRune(userPrompt);
       // Call the connectToNode function
       messageText = clnNodeMessages.establishingConnection;
-      connectToCLNNode(LNnodeIPPort, LNnodeID,localStorage.getItem("SessionPrivateKeyHex"), userPrompt);
+      try {
+        connectToCLNNode({
+          ipPort: LNnodeIPPort, 
+          id: LNnodeID, 
+          privateKey: localStorage.getItem("SessionPrivateKeyHex"), 
+          rune: userPrompt,
+          lnConnection: lnConnection, // replace with your actual variable
+          setLnConnection: setLnConnection // replace with your actual function
+        });
+        
+      } catch (error) {
+        console.error('Error connecting to node:', error);
+        messageText = 'An error occurred while connecting to the node. Please try again.';
+      }
     } else {
       setSystemMode('')
       messageText = clnNodeMessages.invalidRune;

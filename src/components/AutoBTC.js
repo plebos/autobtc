@@ -775,7 +775,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
     switch (userPrompt.toLowerCase()) {
       case "cln":
         localStorage.setItem("LNNodeImpl", userPrompt);
-        handleConnectCLNNode({ stage: 1, systemMode, setSystemMode, LNnodeIPPort, setLNnodeIPPort, LNnodeID, setLNnodeID, LNnodeRune, setLNnodeRune, messages, setMessages, userPrompt })
+        handleConnectCLNNode({ stage: 1, systemMode, setSystemMode, LNnodeIPPort, setLNnodeIPPort, LNnodeID, setLNnodeID, LNnodeRune, setLNnodeRune, messages, setMessages, userPrompt, lnConnection, setLnConnection })
         //handleConnectCLNNode(1, setSystemMode, setLNnodeIPPort, setLNnodeID, setLNnodeRune, setMessages, userPrompt);
         break;
       case "lnd":
@@ -874,9 +874,10 @@ function AutoBTC({ chatMode: initialChatMode }) {
     } else if (systemMode === 'connectNodeMode') {
       handleConnectNodeMode();
     } else if (systemMode === 'connectCLNModeIP') {
-      handleConnectCLNNode({ stage: 2, systemMode, setSystemMode, LNnodeIPPort, setLNnodeIPPort, LNnodeID, setLNnodeID, LNnodeRune, setLNnodeRune, messages, setMessages, userPrompt })
+      handleConnectCLNNode({ stage: 2, systemMode, setSystemMode, LNnodeIPPort, setLNnodeIPPort, LNnodeID, setLNnodeID, LNnodeRune, setLNnodeRune, messages, setMessages, userPrompt, lnConnection, setLnConnection })
     } else if (systemMode === 'connectCLNModeRune') {
-      handleConnectCLNNode({ stage: 3, systemMode, setSystemMode, LNnodeIPPort, setLNnodeIPPort, LNnodeID, setLNnodeID, LNnodeRune, setLNnodeRune, messages, setMessages, userPrompt })
+      console.log("AHB", LNnodeIPPort, LNnodeID, LNnodeRune)
+      handleConnectCLNNode({ stage: 3, systemMode, setSystemMode, LNnodeIPPort, setLNnodeIPPort, LNnodeID, setLNnodeID, LNnodeRune, setLNnodeRune, messages, setMessages, userPrompt, lnConnection, setLnConnection })
       setSystemMode('');
     } else {
       handleAskQuestion();

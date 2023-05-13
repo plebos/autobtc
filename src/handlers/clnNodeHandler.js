@@ -49,10 +49,9 @@ export const connectToCLNNode = async ({ipPort, id, privateKey, rune, lnConnecti
   
   const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  export const executeCLNCommandWithReconnect = async ({ipPort, id, privateKey, rune, method, params, lnConnection, setLnConnection, retries = 3, retryDelay = 1000}) => {
-    let currentRetry = 0;
+  export const executeCLNCommandWithReconnect = async ({ipPort, id, privateKey, rune, method, params, lnConnection, setLnConnection, retryDelay = 1000}) => {
     let output = null;
-
+  
     // Establish the connection and execute the command if it's already connected
     if (lnConnection && lnConnection.connectionStatus$.value === 'connected') {
       output = await executeCLNCommand(lnConnection, method, params, rune);
@@ -64,8 +63,8 @@ export const connectToCLNNode = async ({ipPort, id, privateKey, rune, lnConnecti
       }
     }
   
-    // Retry the connection until successful or out of retries
-    while (currentRetry <= retries) {
+    // Keep trying to connect and execute the command indefinitely until successful
+    while (true) {
       let currentConnection = lnConnection;
   
       if (!currentConnection) {
@@ -77,11 +76,22 @@ export const connectToCLNNode = async ({ipPort, id, privateKey, rune, lnConnecti
           lnConnection: lnConnection, 
           setLnConnection: setLnConnection
         });
-      } else if (currentConnection.connectionStatus$.value !== 'connected') {
+  
+        // Check if currentConnection is not null before proceeding
+        if (!currentConnection) {
+          console.error('Unable to establish connection');
+          await sleep(retryDelay);
+          continue;
+        }
+      }
+  
+      // Check connection status if currentConnection is not null
+      if (currentConnection && currentConnection.connectionStatus$.value !== 'connected') {
         await currentConnection.connect();
       }
   
-      if (currentConnection.connectionStatus$.value === 'connected') {
+      // Check connection status and execute command if currentConnection is not null
+      if (currentConnection && currentConnection.connectionStatus$.value === 'connected') {
         setLnConnection(currentConnection);
         output = await executeCLNCommand(currentConnection, method, params, rune);
         if (output !== null) {
@@ -92,17 +102,11 @@ export const connectToCLNNode = async ({ipPort, id, privateKey, rune, lnConnecti
         }
       }
   
-      // Increment the current retry counter and wait before the next retry
-      currentRetry++;
-      if (currentRetry <= retries) {
-        await sleep(retryDelay);
-      }
+      // Wait before the next retry
+      await sleep(retryDelay);
     }
-  
-    // If the loop finishes, all retries have failed
-    console.error(`Failed to execute command after ${retries} retries.`);
-    return null;
   };
+  
   
   
 export async function executeCLNCommand(ln, method, params, rune) {
