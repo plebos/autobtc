@@ -96,10 +96,10 @@ export function preprocess_listpeers(data) {
       lightning_dir:"/path/to/dummy/lightning/dir",
     }));
   
-  // Replace the path with a dummy value
-  if(processedData.lightning_dir) {
-    processedData.lightning_dir = "/path/to/dummy/lightning/dir";
-  }
+    
+    if(processedData['lightning-dir']) {
+      processedData['lightning-dir'] = "/path/to/dummy/lightning/dir";
+    }
 
   if(processedData.our_features && processedData.our_features.lightning_dir) {
     processedData.our_features.lightning_dir = "/path/to/dummy/lightning/dir";
