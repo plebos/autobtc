@@ -1,4 +1,16 @@
-# Getting Started with Create React App
+# AutoBTC
+
+Welcome to AutoBTC, a state-of-the-art platform that harmonizes the cutting-edge capabilities of AI and Large Language Models with the power of Bitcoin and the Lightning Network. Our platform facilitates the use of advanced LLMs, fine-tuned or custom-designed for optimal performance, in exchange for Lightning payments. This allows us to automate complex tasks and let users focus on their business. AutoBTC embodies a commitment to self-custody and privacy, offering a cost-effective solution that handles the complexities behind the scenes, all thanks to our powerful, precision-engineered AI models.
+
+![AutoBTC Demo](https://youtube.com/tal/123)
+
+## Table of Contents
+- [Getting Started](#getting-started)
+- [Available Scripts](#available-scripts)
+- [Learn More](#learn-more)
+- [FAQ](#faq)
+
+## Getting Started
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -11,8 +23,8 @@ In the project directory, you can run:
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
 ### `npm test`
 
@@ -45,26 +57,6 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+## FAQ
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+For more information, please refer to our [FAQ section](https://autobtc.ai/faq).
