@@ -93,12 +93,18 @@ export function preprocess_listpeers(data) {
       ...bindingInfo,
       address: bindingInfo.type === 'ipv4' ? '0.0.0.0' : '0000:0000:0000:0000:0000:0000:0000:0000',
       port: 65535,
+      lightning_dir:"/path/to/dummy/lightning/dir",
     }));
   
-    // Replace the path with a dummy value
+  // Replace the path with a dummy value
+  if(processedData.lightning_dir) {
     processedData.lightning_dir = "/path/to/dummy/lightning/dir";
+  }
+
+  if(processedData.our_features && processedData.our_features.lightning_dir) {
     processedData.our_features.lightning_dir = "/path/to/dummy/lightning/dir";
-    
+  }
+
     
     return processedData;
   }
