@@ -2,8 +2,6 @@ import { splitIpPort } from '../utils/utils';
 import LnMessage from 'lnmessage';
 
 const createLnConnection = async ({remoteNodeId, ip, port, privateKey}) => {
-  
-  console.log("Hello")
 
   try {
 
@@ -13,7 +11,6 @@ const createLnConnection = async ({remoteNodeId, ip, port, privateKey}) => {
       error: (message) => console.log(`ERROR: ${message}`),
     };
     
-
     const ln = new LnMessage({
       remoteNodePublicKey: remoteNodeId,
       wsProxy: process.env.REACT_APP_WS_PROXY,
@@ -23,9 +20,6 @@ const createLnConnection = async ({remoteNodeId, ip, port, privateKey}) => {
       logger: logger,
     });
 
-    console.log(ln._logger)
-    console.log("INSIDE")
-    console.log(ln)
     const isConnected = await ln.connect();
     console.log("connection:", isConnected);
     if (isConnected) {
@@ -54,9 +48,7 @@ export const connectToCLNNode = async ({ipPort, id, privateKey, rune, lnConnecti
       
       setLnConnection(ln); // Update the lnConnection state
       return ln
-      // const output = await executeLnCommand(ln, "getinfo", [], rune)
-      // console.log(output);
-      // return output;
+      
     } catch (error) {
       console.error("Error connecting to node:", error);
     }
@@ -123,8 +115,7 @@ export const connectToCLNNode = async ({ipPort, id, privateKey, rune, lnConnecti
     }
   };
   
-  
-  
+
 export async function executeCLNCommand(ln, method, params, rune) {
     if (!ln) {
       console.error('No connection available');
