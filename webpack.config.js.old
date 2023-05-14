@@ -3,6 +3,11 @@ const path = require("path");
 
 module.exports = {
     module: {
+      plugins: [
+        new ProvideSharedPlugin({
+          buffer: ['buffer', 'Buffer'],
+        }),
+      ],
         rules: [
             {
               test: /\.wasm$/,
@@ -32,4 +37,7 @@ module.exports = {
             net: require.resolve('net-browserify'),
         },
     },
+    node: {
+      Buffer: true
+    }
 };

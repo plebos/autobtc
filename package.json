@@ -20,7 +20,7 @@
     "crypto-browserify": "^3.12.0",
     "dompurify": "^3.0.2",
     "elliptic": "^6.5.4",
-    "lnmessage": "^0.2.1",
+    "lnmessage": "^0.2.2",
     "lnsocket": "^0.3.2",
     "net-browserify": "^0.2.4",
     "node-loader": "^2.0.0",

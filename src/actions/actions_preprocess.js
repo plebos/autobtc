@@ -36,7 +36,7 @@ export function preprocess_listpeers(data) {
       const feebase_msat_avg = feebase_msat_sum / num_channels;
       const feeproportional_msat_avg = feeproportional_msat_sum / num_channels;
 
-      const truncatedPeerId = peer_id.length > 10 ? `${peer_id.slice(0, 5)}..${peer_id.slice(-5)}` : peer_id;
+      const truncatedPeerId = peer_id.length > 10 ? `${peer_id.slice(0, 10)}..${peer_id.slice(-10)}` : peer_id;
       const desc = `Peer ${truncatedPeerId}, ${
         connected ? "connected" : "not connected"
       }`;

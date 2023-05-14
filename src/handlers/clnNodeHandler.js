@@ -2,15 +2,30 @@ import { splitIpPort } from '../utils/utils';
 import LnMessage from 'lnmessage';
 
 const createLnConnection = async ({remoteNodeId, ip, port, privateKey}) => {
+  
+  console.log("Hello")
+
   try {
+
+    const logger = {
+      info: (message) => console.log(`INFO: ${message}`),
+      warn: (message) => console.log(`WARN: ${message}`),
+      error: (message) => console.log(`ERROR: ${message}`),
+    };
+    
+
     const ln = new LnMessage({
       remoteNodePublicKey: remoteNodeId,
       wsProxy: process.env.REACT_APP_WS_PROXY,
       ip: ip,
       port: port,
       privateKey: privateKey,
+      logger: logger,
     });
 
+    console.log(ln._logger)
+    console.log("INSIDE")
+    console.log(ln)
     const isConnected = await ln.connect();
     console.log("connection:", isConnected);
     if (isConnected) {
@@ -100,6 +115,7 @@ export const connectToCLNNode = async ({ipPort, id, privateKey, rune, lnConnecti
         } else {
           console.error('executeLNCommand failed');
         }
+        return
       }
   
       // Wait before the next retry
