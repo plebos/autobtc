@@ -3,9 +3,8 @@
 Welcome to AutoBTC, a state-of-the-art platform that harmonizes the cutting-edge capabilities of AI and Large Language Models with the power of Bitcoin and the Lightning Network. Our platform facilitates the use of advanced LLMs, fine-tuned or custom-designed for optimal performance, in exchange for Lightning payments. This allows us to automate complex tasks and let users focus on their business. AutoBTC embodies a commitment to self-custody and privacy, offering a cost-effective solution that handles the complexities behind the scenes, all thanks to our powerful, precision-engineered AI models.
 
 
-![AutoBTC Demo][![AutoBTC]          // Title
-(https://nostr.build/i/7c7c6898b03931d894e0e4e455124ebcf64f791af8c86edc0c309ae9ae5ebd40.jpg)] // Thumbnail
-(https://www.youtube.com/watch?v=l2_aXfZEfpg "")    // Video Link
+[![AutoBTC Demo](https://nostr.build/i/7c7c6898b03931d894e0e4e455124ebcf64f791af8c86edc0c309ae9ae5ebd40.jpg)](https://www.youtube.com/watch?v=l2_aXfZEfpg)
+
 
 ## Table of Contents
 - [Getting Started](#getting-started)
