@@ -29,6 +29,7 @@ import { FAQ } from './QAtext';
 function AutoBTC({ chatMode: initialChatMode }) {
   const [placeholder, setPlaceholder] = useState("Type your question...");
   // React Hooks to manage sidebar state
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
   const [style, setStyle] = useState({});
@@ -1232,14 +1233,15 @@ function handleButtonClick(fn) {
     {isSidebarOpen ? <FaTimes /> : <FaBars />}
 </button>
         <div className="chat-type-container">
-          <div className="chat-type-selector">
+          <div className="chat-type-selector" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
             {chatMode}
             <div className="extended-hover-area">
-              <div className="chat-type-options">
+              <div className="chat-type-options" style={{ display: isDropdownOpen ? "block" : "none" }}>
                 <div
                   className="chat-type-option"
                   onClick={() => {
                     handleSetChatMode("normal");
+                    setIsDropdownOpen(false); // close the dropdown
                   }}
                 >
                   Normal Chat
@@ -1249,6 +1251,7 @@ function handleButtonClick(fn) {
                   className="chat-type-option"
                   onClick={() => {
                     handleSetChatMode("images");
+                    setIsDropdownOpen(false); // close the dropdown
                   }}
                 >
                   Images Creator
@@ -1257,6 +1260,7 @@ function handleButtonClick(fn) {
                   className="chat-type-option"
                   onClick={() => {
                     handleSetChatMode("lightning");
+                    setIsDropdownOpen(false); // close the dropdown
                   }}
                 >
                   ⚡Lightning Assistant⚡
