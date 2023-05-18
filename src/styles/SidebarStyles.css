@@ -1,7 +1,8 @@
+
 .sidebar {
   background-color: #2c3e50;
   width: 250px;
-  height: 100vh;
+  height: 100%;
   position: fixed;
   display: flex;
   flex-direction: column;
@@ -10,7 +11,16 @@
   box-sizing: border-box;
   color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  z-index: 10; /* A value higher than that of your chat-container */
+
 }
+
+.sidebar.collapsed {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.5s;
+}
+
 
 .sidebar h2 {
   font-size: 24px;
@@ -313,4 +323,105 @@
   opacity: 1;
 }
 
+@media only screen and (max-width: 768px) {
+  .sidebar {
+    width: 270px; /* Reduce width for mobile screens */
+    padding: 2rem 0; /* Reduce horizontal padding */
+  }
 
+  .sidebar-closed {
+    height: 0;
+    overflow: hidden;
+  }
+
+
+
+  .button-container {
+    position: relative;
+    bottom: auto;
+  }
+
+  .sidebar-button {
+    padding: 1rem 0.6rem;
+    font-size: 18px;
+  }
+
+  .sidebar h2 {
+    font-size: 20px;
+  }
+
+  .token-info {
+    font-size: 15px;
+  }
+
+  .sidebar-button.export-html,
+  .sidebar-button.export-nostr {
+    padding: 0.2rem 0.3rem;
+    font-size: 12px;
+  }
+
+  .progress-bar-description,
+  .progress-bar-labels {
+    font-size: 12px;
+  }
+
+  .tooltip-text {
+    width: 90px;
+  }
+
+  .dark-mode-icon {
+    font-size: 0.6rem;
+  }
+
+  .status-title {
+    font-size: 12px;
+  }
+
+  .sidebar-icon {
+    font-size: 16px;
+  }
+
+  .icon-text {
+    font-size: 12px;
+  }
+
+  .custom-ostrich-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.toggle-sidebar-button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block; /* Show it by default */
+  font-size: 1.5em;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  z-index: 11;
+}
+
+/* Hide the button on larger screens */
+@media (min-width: 768px) {
+  .toggle-sidebar-button {
+    display: none;
+  }
+}
+
+.toggle-sidebar-button:hover {
+  background-color: #0056b3; /* Darker color on hover */
+}
+
+
+/* Media query to handle screens smaller than 600px */
+@media (max-width: 600px) {
+  .toggle-sidebar-button {
+    display: block; /* Display the button on smaller screens */
+  }
+}

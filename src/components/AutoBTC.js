@@ -2,6 +2,7 @@ import '../styles/ChatStyles.css';
 import '../styles/Dotpulse.css';
 import '../styles/SidebarStyles.css';
 import '../styles/faqstyles.css';
+import { FaBars, FaTimes } from 'react-icons/fa';
 import { getInitialUnlockedActions, sanitizeSatsInput } from '../utils/utils';
 import actionsData from '../actions/actions.json';
 import * as ActionsPreprocess from '../actions/actions_preprocess';
@@ -27,6 +28,9 @@ import { FAQ } from './QAtext';
 
 function AutoBTC({ chatMode: initialChatMode }) {
   const [placeholder, setPlaceholder] = useState("Type your question...");
+  // React Hooks to manage sidebar state
+  const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
   const [style, setStyle] = useState({});
   const [unlockedActions, setUnlockedActions] = useState(getInitialUnlockedActions());
   const [chatMode, setChatMode] = useState(initialChatMode || 'normal');
@@ -383,6 +387,30 @@ function AutoBTC({ chatMode: initialChatMode }) {
       console.error('Error fetching unique ID and balance:', error);
     }
   };
+
+  useEffect(() => {
+    // Attach the handleClickOutside function to the click event
+    document.addEventListener('click', handleClickOutside);
+
+    // Return a cleanup function that will be called when the component is unmounted
+    return () => {
+        // Remove the handleClickOutside function from the click event
+        document.removeEventListener('click', handleClickOutside);
+    };
+}, []);  // Empty dependency array means this effect runs once on mount and cleanup on unmount
+
+  // Create a resize listener
+useEffect(() => {
+  const handleResize = () => {
+      setIsMobile(window.innerWidth <= 600);
+  };
+
+  window.addEventListener('resize', handleResize);
+
+  return () => {
+      window.removeEventListener('resize', handleResize);
+  };
+}, []);
 
 
   useEffect(() => {
@@ -1036,10 +1064,23 @@ function AutoBTC({ chatMode: initialChatMode }) {
     setDarkMode(!darkMode);
   }
 
+  function handleClickOutside(event) {
+    if (isMobile && isSidebarOpen && !event.target.closest('.sidebar')) {
+        setIsSidebarOpen(false);
+    }
+}
 
+function handleButtonClick(fn) {
+    fn();
+    if (isMobile) {
+        setIsSidebarOpen(false);
+    }
+}
+
+  
   return (
     <div className="app-container">
-      <div className="sidebar">
+      <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
         <div
           className={`dark-mode-icon ${darkMode ? "fas fa-sun" : "fas fa-moon"}`}
           onClick={toggleDarkMode}
@@ -1093,7 +1134,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
         </div>
         <div className="button-container">
           <div className="main-buttons">
-            <div className="sidebar-button top-up" onClick={enterTopUpMode}>
+            <div className="sidebar-button top-up" onClick={() => handleButtonClick(enterTopUpMode)}>
               <FontAwesomeIcon icon={faBolt} />
               <span className="icon-space"></span>
               Top-up
@@ -1107,12 +1148,12 @@ function AutoBTC({ chatMode: initialChatMode }) {
             </div>
             {exportOptionsVisible && (
               <div className="export-options">
-                <div className="sidebar-button export-html" onClick={handleExportHTML}>
+                <div className="sidebar-button export-html"  onClick={() => handleButtonClick(handleExportHTML)}>
                   <FontAwesomeIcon icon={faFileAlt} />
                   <span className="icon-space"></span>
                   json
                 </div>
-                <div className="sidebar-button export-nostr" onClick={enterNostrExportMode}>
+                <div className="sidebar-button export-nostr"  onClick={() => handleButtonClick(enterNostrExportMode)}>
                   <FontAwesomeIcon icon={faFileAlt } />
                   <span className="icon-space"></span>
                   Nostr
@@ -1121,7 +1162,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
             )}
 
 
-            <div className="sidebar-button connect-ln" onClick={enterConnectNodeMode}>
+            <div className="sidebar-button connect-ln" onClick={() => handleButtonClick(enterConnectNodeMode)}>
               <FontAwesomeIcon icon={faCircleNodes} />
               <span className="icon-space"></span>
               Connect LN Node
@@ -1130,12 +1171,12 @@ function AutoBTC({ chatMode: initialChatMode }) {
                 <span className="tooltip-text">{currentConnectionStatus}</span>
               </div>
             </div>
-            <div className="sidebar-button restore-uid" onClick={enterRestoreAccountMode}>
+            <div className="sidebar-button restore-uid" onClick={() => handleButtonClick(enterRestoreAccountMode)}>
               <FontAwesomeIcon icon={faFingerprint} />
               <span className="icon-space"></span>
               Restore Account
             </div>
-            <div className="sidebar-button github" onClick={handleClearLocalStorage}>
+            <div className="sidebar-button clear-local-storage" onClick={() => handleButtonClick(handleClearLocalStorage)}>
               <FontAwesomeIcon icon={faTrash} />
               <span className="icon-space"></span>
               Clear Local Storage
@@ -1144,9 +1185,12 @@ function AutoBTC({ chatMode: initialChatMode }) {
           <div className="separator"></div>
 
           <div className="bottom-icons">
-            <div className="icon-wrapper" onClick={() => {
-              handleSetChatMode("faq");
-            }}>
+          <div className="icon-wrapper" onClick={() => {
+    handleSetChatMode("faq");
+    if (isMobile) {
+        setIsSidebarOpen(false);
+    }
+}}>
               <FontAwesomeIcon className="sidebar-icon" icon={faQuestionCircle} />
               <span className="icon-text">Q&A</span>
             </div>
@@ -1170,7 +1214,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
 
             <div className="icon-wrapper">
 
-              <FontAwesomeIcon className="sidebar-icon" icon={faCoffee} onClick={enterSponsorMode} />
+              <FontAwesomeIcon className="sidebar-icon" icon={faCoffee} onClick={() => handleButtonClick(enterSponsorMode)} />
               <span className="icon-text">Sponsor</span>
             </div>
           </div>
@@ -1178,7 +1222,15 @@ function AutoBTC({ chatMode: initialChatMode }) {
         </div>
       </div>
 
-      <div className={`chat-container${darkMode ? " dark-mode" : ""}`}>
+      <div className={`chat-container ${darkMode ? "dark-mode" : ""} ${isSidebarOpen ? "" : "expanded"}`}>
+
+              {/* Button to toggle sidebar */}
+              <button className={`toggle-sidebar-button ${isSidebarOpen ? "" : "collapsed"}`} onClick={(event) => {
+    event.stopPropagation(); 
+    setIsSidebarOpen(!isSidebarOpen)
+}}>
+    {isSidebarOpen ? <FaTimes /> : <FaBars />}
+</button>
         <div className="chat-type-container">
           <div className="chat-type-selector">
             {chatMode}
