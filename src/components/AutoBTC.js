@@ -1358,7 +1358,7 @@ function handleButtonClick(fn) {
             onKeyPress={(e) => {
               if (e.key === 'Enter') handleSubmit();
             }}
-            style={style}
+            style={{ ...style, fontSize: '16px' }}
             disabled={aiThinking}
           />
           <button onClick={handleSubmit}>Send</button>

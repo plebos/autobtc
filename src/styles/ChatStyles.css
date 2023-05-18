@@ -543,12 +543,12 @@ html, body {
     }
   
     .chat-type-selector {
-      font-size: 14px; /* decrease font size */
-      min-width: 140px; /* adjust as needed */
+      font-size: 16px; /* decrease font size */
+      min-width: 170px; /* adjust as needed */
     }
   
     .chat-type-options {
-      font-size: 12px; /* decrease font size */
+      font-size: 16px; /* decrease font size */
     }
   
     .pricing-display {
@@ -649,7 +649,7 @@ html, body {
     
     
     .stamp {
-      font-size: 2em; /* reduce font size */
+      font-size: 4em; /* reduce font size */
       padding: 3px; /* reduce padding */
     }
   }
