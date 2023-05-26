@@ -13,7 +13,7 @@ import userAvatar from '../assets/images/user-avatar.png';
 import systemAvatar from '../assets/images/system-avatar.png';
 import serverAvatar from '../assets/images/system-avatar.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFileAlt ,faPaste, faCoffee,faQuestionCircle, faFingerprint, faTrash, faFileExport, faBolt } from "@fortawesome/free-solid-svg-icons";
+import { faFileAlt, faPaste, faCoffee, faQuestionCircle, faFingerprint, faTrash, faFileExport, faBolt } from "@fortawesome/free-solid-svg-icons";
 import { faCircleNodes } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faTwitter, faTelegram } from '@fortawesome/free-brands-svg-icons';
 import QRCode from 'qrcode.react';
@@ -25,6 +25,7 @@ import { handleTopUp } from '../handlers/handleTopUp'
 import { handleNostrExport, handleNostrExportPhase2 } from '../handlers/handleNostrExport'
 import { fetchCreateUser, fetchBalanceLimits, fetchUserBalance } from '../handlers/backendCommHandler';
 import { FAQ } from './QAtext';
+import { connected } from 'process';
 
 function AutoBTC({ chatMode: initialChatMode }) {
   const [placeholder, setPlaceholder] = useState("Type your question...");
@@ -170,16 +171,34 @@ function AutoBTC({ chatMode: initialChatMode }) {
     const SessionPrivateKeyHex = localStorage.getItem("SessionPrivateKeyHex");
     const LNNoderune = localStorage.getItem("LNNoderune");
 
-    return executeCLNCommandWithReconnect({
-      ipPort: LNNodeipPort,
-      id: LNNodeID,
-      privateKey: SessionPrivateKeyHex,
-      rune: LNNoderune,
-      method: method,
-      params: params,
-      lnConnection: lnConnection,
-      setLnConnection: setLnConnection
-    });
+    try {
+      console.log("INSIDE try")
+      let output = await executeCLNCommandWithReconnect({
+        ipPort: LNNodeipPort,
+        id: LNNodeID,
+        privateKey: SessionPrivateKeyHex,
+        rune: LNNoderune,
+        method: method,
+        params: params,
+        lnConnection: lnConnection,
+        setLnConnection: setLnConnection
+      });
+
+      return output;
+
+    } catch (error) {
+      if (error.name === "ConnectionError") {
+        throw {
+          name: "ConnectionError",
+          message: "Could not connect to Lightning node. Please check your connection and try again."
+        };
+      } else {
+        throw {
+          name: "CLNCommandError",
+          message: `An unexpected error occurred. Please try again later. ${error.message}`
+        };
+      }
+    }
 
   }
 
@@ -252,24 +271,45 @@ function AutoBTC({ chatMode: initialChatMode }) {
       setMessages((prevMessages) => {
         (async () => {
 
-          let out = await executeCLNCommandWithReconnect({
-            ipPort: LNNodeipPort,
-            id: LNNodeID,
-            privateKey: SessionPrivateKeyHex,
-            rune: LNNoderune,
-            method: "getinfo",
-            params: [],
-            lnConnection: lnConnection,
-            setLnConnection: setLnConnection
-          });
+          try {
+            let out = await executeCLNCommandWithReconnect({
+              ipPort: LNNodeipPort,
+              id: LNNodeID,
+              privateKey: SessionPrivateKeyHex,
+              rune: LNNoderune,
+              method: "getinfo",
+              params: [],
+              lnConnection: lnConnection,
+              setLnConnection: setLnConnection
+            });
 
-          setMessages([
-            ...prevMessages,
-            {
-              sender: "system",
-              text: chatMode !== 'lightning' ? `Connected to ${out.alias} ⚡ <br/> Consider changing mode to Lightning Assistant` : `Connected to ${out.alias} ⚡`
-            },
-          ]);
+            setMessages([
+              ...prevMessages,
+              {
+                sender: "system",
+                text: chatMode !== 'lightning' ? `Connected to ${out.alias} ⚡ <br/> Consider changing mode to Lightning Assistant` : `Connected to ${out.alias} ⚡`
+              },
+            ]);
+          } catch (error) {
+            if (error.name === "ConnectionError") {
+              setMessages([
+                ...prevMessages,
+                {
+                  sender: "system",
+                  text: `Could not connect to Lightning node. Please check your connection and try again. ${error.message}`
+                },
+              ]);
+            } else {
+              setMessages([
+                ...prevMessages,
+                {
+                  sender: "system",
+                  text: `An unexpected error occurred. Please try again later. ${error.message}`
+                },
+              ]);
+            }
+          }
+
         })();
         return prevMessages;
       });
@@ -330,7 +370,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
     setUniqueIdVisible(!uniqueIdVisible);
   };
 
-  const restoreAccount = async (inputUniqueId, init=false) => {
+  const restoreAccount = async (inputUniqueId, init = false) => {
     try {
       const response = await fetchUserBalance({
         unique_id: inputUniqueId
@@ -339,8 +379,8 @@ function AutoBTC({ chatMode: initialChatMode }) {
       if (response.ok) {
         const data = await response.json();
 
-        if(!init && data.balance == 0) {
-          return false;  
+        if (!init && data.balance == 0) {
+          return false;
         }
 
         setUniqueId(inputUniqueId);
@@ -395,23 +435,23 @@ function AutoBTC({ chatMode: initialChatMode }) {
 
     // Return a cleanup function that will be called when the component is unmounted
     return () => {
-        // Remove the handleClickOutside function from the click event
-        document.removeEventListener('click', handleClickOutside);
+      // Remove the handleClickOutside function from the click event
+      document.removeEventListener('click', handleClickOutside);
     };
-}, []);  // Empty dependency array means this effect runs once on mount and cleanup on unmount
+  }, []);  // Empty dependency array means this effect runs once on mount and cleanup on unmount
 
   // Create a resize listener
-useEffect(() => {
-  const handleResize = () => {
+  useEffect(() => {
+    const handleResize = () => {
       setIsMobile(window.innerWidth <= 600);
-  };
+    };
 
-  window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize);
 
-  return () => {
+    return () => {
       window.removeEventListener('resize', handleResize);
-  };
-}, []);
+    };
+  }, []);
 
 
   useEffect(() => {
@@ -581,10 +621,18 @@ useEffect(() => {
 
 
                     async function handleActionExecution(action, avoid_followup, ai_preprocess_function) {
-                      const actionOutput = await executeAction(wrapper_function, action.name, action.args);
-                      let processedOutput = actionOutput;
-
-                      if (ai_preprocess_function && ActionsPreprocess[ai_preprocess_function]) {
+                      let actionOutput;
+                      let processedOutput;
+                    
+                      try {
+                        actionOutput = await executeAction(wrapper_function, action.name, action.args);
+                        processedOutput = actionOutput;
+                      } catch (error) {
+                        // If there's an error, assign the error message to processedOutput
+                        processedOutput = error.message;
+                      }
+                    
+                      if (ai_preprocess_function && ActionsPreprocess[ai_preprocess_function] && actionOutput) {
                         processedOutput = ActionsPreprocess[ai_preprocess_function](actionOutput);
                       }
 
@@ -849,7 +897,7 @@ useEffect(() => {
   const isValidAmount = (amount, balanceLimits, balance, sponsor) => {
     const minVal = Math.max(balanceLimits.min_balance - balance, 1);
     return !isNaN(amount) && (sponsor && amount >= 1 || amount >= minVal) && (sponsor || (amount <= balanceLimits.max_balance - balance));
-}
+  }
 
 
   const handleTopUpMode = (sponsor = false) => {
@@ -1067,18 +1115,18 @@ useEffect(() => {
 
   function handleClickOutside(event) {
     if (isMobile && isSidebarOpen && !event.target.closest('.sidebar')) {
-        setIsSidebarOpen(false);
+      setIsSidebarOpen(false);
     }
-}
+  }
 
-function handleButtonClick(fn) {
+  function handleButtonClick(fn) {
     fn();
     if (isMobile) {
-        setIsSidebarOpen(false);
+      setIsSidebarOpen(false);
     }
-}
+  }
 
-  
+
   return (
     <div className="app-container">
       <div className={`sidebar ${isSidebarOpen ? "" : "collapsed"}`}>
@@ -1149,13 +1197,13 @@ function handleButtonClick(fn) {
             </div>
             {exportOptionsVisible && (
               <div className="export-options">
-                <div className="sidebar-button export-html"  onClick={() => handleButtonClick(handleExportHTML)}>
+                <div className="sidebar-button export-html" onClick={() => handleButtonClick(handleExportHTML)}>
                   <FontAwesomeIcon icon={faFileAlt} />
                   <span className="icon-space"></span>
                   json
                 </div>
-                <div className="sidebar-button export-nostr"  onClick={() => handleButtonClick(enterNostrExportMode)}>
-                  <FontAwesomeIcon icon={faFileAlt } />
+                <div className="sidebar-button export-nostr" onClick={() => handleButtonClick(enterNostrExportMode)}>
+                  <FontAwesomeIcon icon={faFileAlt} />
                   <span className="icon-space"></span>
                   Nostr
                 </div>
@@ -1186,12 +1234,12 @@ function handleButtonClick(fn) {
           <div className="separator"></div>
 
           <div className="bottom-icons">
-          <div className="icon-wrapper" onClick={() => {
-    handleSetChatMode("faq");
-    if (isMobile) {
-        setIsSidebarOpen(false);
-    }
-}}>
+            <div className="icon-wrapper" onClick={() => {
+              handleSetChatMode("faq");
+              if (isMobile) {
+                setIsSidebarOpen(false);
+              }
+            }}>
               <FontAwesomeIcon className="sidebar-icon" icon={faQuestionCircle} />
               <span className="icon-text">Q&A</span>
             </div>
@@ -1225,13 +1273,13 @@ function handleButtonClick(fn) {
 
       <div className={`chat-container ${darkMode ? "dark-mode" : ""} ${isSidebarOpen ? "" : "expanded"}`}>
 
-              {/* Button to toggle sidebar */}
-              <button className={`toggle-sidebar-button ${isSidebarOpen ? "" : "collapsed"}`} onClick={(event) => {
-    event.stopPropagation(); 
-    setIsSidebarOpen(!isSidebarOpen)
-}}>
-    {isSidebarOpen ? <FaTimes /> : <FaBars />}
-</button>
+        {/* Button to toggle sidebar */}
+        <button className={`toggle-sidebar-button ${isSidebarOpen ? "" : "collapsed"}`} onClick={(event) => {
+          event.stopPropagation();
+          setIsSidebarOpen(!isSidebarOpen)
+        }}>
+          {isSidebarOpen ? <FaTimes /> : <FaBars />}
+        </button>
         <div className="chat-type-container">
           <div className="chat-type-selector" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
             {chatMode}

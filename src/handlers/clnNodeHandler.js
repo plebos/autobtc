@@ -116,7 +116,7 @@ export const connectToCLNNode = async ({ipPort, id, privateKey, rune, lnConnecti
   };
   
 
-export async function executeCLNCommand(ln, method, params, rune) {
+  export async function executeCLNCommand(ln, method, params, rune) {
     if (!ln) {
       console.error('No connection available');
       return null;
@@ -131,6 +131,6 @@ export async function executeCLNCommand(ln, method, params, rune) {
       return result;
     } catch (error) {
       console.error('Error executing command:', error.message);
-      return null;
+      throw error;
     }
   };

@@ -50,7 +50,7 @@
           }, 
           {
             "name": "connect",
-            "description": "Establish a new connection with another node in the Lightning Network.",
+            "description": "Establish a new   connection with another node in the Lightning Network.",
             "category": "node",
             "args": [
               {
@@ -172,7 +172,7 @@
               }
             ],
             "args_description": [
-              "The amount in millisatoshi precision, or 'any' for an invoice that can be paid with any amount.",
+              "The amount in millisatoshi precision, or 'any' for an invoice that can be paid with any amount, specify msat or sat after the number",
               "A unique string or number used as a label for the invoice.",
               "A short description of the purpose of the payment.",
               "Optional expiry time for the invoice in seconds. Default is 604800 (1 week).",
@@ -184,6 +184,12 @@
             ],
             "requires_user_approval": false,
             "dangerous": false,
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "avoid_followup": true,
+              "requires_user_approval": true,
+              "dangerous": false
+            },
             "unlocked": true
           }, 
           {
