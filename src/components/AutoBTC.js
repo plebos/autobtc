@@ -692,7 +692,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
                       let processedOutput;
 
                       try {
-                        console.log("handleActionExecution");  // Log arguments before executing action
+
                         console.log(action.args);  // Log arguments before executing action
                         actionOutput = await executeAction(wrapper_function, action.name, action.args);
                         processedOutput = actionOutput;
@@ -737,8 +737,8 @@ function AutoBTC({ chatMode: initialChatMode }) {
                         countApprovedActions += 1;
                       } else {
                         if (processedOutput !== undefined) {
-                          nonfollowUpResults += `${action.name}(${printArgs(action.args)}) action obtained:<br/> ${jsonToHtml(processedOutput)}<br/><br/>`;
-                        }
+                          nonfollowUpResults += `${action.name}(${printArgs(action.args)}) action obtained:<br/><div class="json-to-html-output">${jsonToHtml(processedOutput)}</div><br/><br/>`;
+                      }                      
                       }
 
                       if (processedOutput && typeof processedOutput === 'object' && processedOutput !== null && !action_output_bolt11) {
