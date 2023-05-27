@@ -12,7 +12,7 @@ export const clnNodeMessages = {
     stageTwo: `
         <p>To establish read-only access enforced by your node, we will create a rune that only grants access to your browser.</p>
         <p>Please execute the following command on your node:</p>
-        <pre>lightning-cli commando-rune restrictions='[["id=PUBLIC_KEY_PLACEHOLDER"], ["method^list","method^get","method=summary","method=waitanyinvoice","method=waitinvoice"],["method/listdatastore"], ["rate=60"]]' | jq -r '.rune'</pre>
+        <pre>lightning-cli commando-rune restrictions='[["id=PUBLIC_KEY_PLACEHOLDER"], ["method^list","method^get","method=summary", "method=invoice", "method=waitanyinvoice","method=waitinvoice"],["method/listdatastore"], ["rate=60"]]' | jq -r '.rune'</pre>
         <p>Executing this command will generate an output that includes the rune string you need.
         <br/>Please provide only the <strong>rune</strong> string to proceed.</p>
         <p>Example output:<br/>

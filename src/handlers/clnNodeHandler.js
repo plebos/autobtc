@@ -17,7 +17,7 @@ const createLnConnection = async ({remoteNodeId, ip, port, privateKey}) => {
       ip: ip,
       port: port,
       privateKey: privateKey,
-      logger: logger,
+      //logger: logger, // avoid logging all lnmessage related logs
     });
 
     const isConnected = await ln.connect();

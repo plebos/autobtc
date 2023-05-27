@@ -662,3 +662,15 @@ html, body {
       margin-right: 3px; /* reduce margin */
     }
   }
+
+  pre {
+    white-space: pre-wrap;       /* css-3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    font-family: monospace;      /* Change the font family to monospace */
+    font-size: 1.25em;           /* Increase the font size */
+    color: darkblue;             /* Change the text color */
+    background-color: #f0f0f0;   /* Change the background color */
+}

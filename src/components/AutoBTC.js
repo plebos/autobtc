@@ -2,6 +2,7 @@ import '../styles/ChatStyles.css';
 import '../styles/Dotpulse.css';
 import '../styles/SidebarStyles.css';
 import '../styles/faqstyles.css';
+import JSONFormatter from 'json-formatter-js'
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { getInitialUnlockedActions, sanitizeSatsInput } from '../utils/utils';
 import actionsData from '../actions/actions.json';
@@ -25,6 +26,7 @@ import { handleTopUp } from '../handlers/handleTopUp'
 import { handleNostrExport, handleNostrExportPhase2 } from '../handlers/handleNostrExport'
 import { fetchCreateUser, fetchBalanceLimits, fetchUserBalance } from '../handlers/backendCommHandler';
 import { FAQ } from './QAtext';
+import ParamsReviewModal from './ParamsReviewModal';
 import { connected } from 'process';
 
 function AutoBTC({ chatMode: initialChatMode }) {
@@ -35,6 +37,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 600);
   const [style, setStyle] = useState({});
   const [unlockedActions, setUnlockedActions] = useState(getInitialUnlockedActions());
+  const [deferredActions, setDeferredActions] = useState([]);
   const [chatMode, setChatMode] = useState(initialChatMode || 'normal');
   const [pricingData, setPricingData] = useState({ price_per_image_sats: 0, tokens_per_sat: 0 });
   const [userPrompt, setUserPrompt] = useState('');
@@ -53,6 +56,8 @@ function AutoBTC({ chatMode: initialChatMode }) {
   const [exportOptionsVisible, setExportOptionsVisible] = useState(false);
   const [pendingInvoices, setPendingInvoices] = useState(new Map());
   const messagesEndRef = useRef(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [currentAction, setCurrentAction] = useState(null);
   const [uniqueIdVisible, setUniqueIdVisible] = useState(false);
   const [normalChatMessages, setNormalChatMessages] = useState([
     { sender: 'ai', text: 'Hello, how are you?', total_tokens: null },
@@ -172,7 +177,6 @@ function AutoBTC({ chatMode: initialChatMode }) {
     const LNNoderune = localStorage.getItem("LNNoderune");
 
     try {
-      console.log("INSIDE try")
       let output = await executeCLNCommandWithReconnect({
         ipPort: LNNodeipPort,
         id: LNNodeID,
@@ -195,7 +199,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
       } else {
         throw {
           name: "CLNCommandError",
-          message: `An unexpected error occurred. Please try again later. ${error.message}`
+          message: `An unexpected error occurred. Reason: ${error.message}`
         };
       }
     }
@@ -370,6 +374,69 @@ function AutoBTC({ chatMode: initialChatMode }) {
     setUniqueIdVisible(!uniqueIdVisible);
   };
 
+
+  const handleModalClose = () => {
+    if (deferredActions.length > 0) {
+      // Resolve the promise
+      const { resolve } = deferredActions[0];
+      resolve();
+
+      // Remove the current action from the deferred actions list
+      setDeferredActions(prevDeferredActions => prevDeferredActions.slice(1));
+    }
+
+    setModalOpen(false);
+  };
+
+
+  const handleModalApproval = async (formData) => {
+    if (deferredActions.length > 0) {
+      let action = { ...deferredActions[0].action }; // create a new action object
+
+      // Convert action.args from an array to an object
+      let argsObj = {};
+      action.args.forEach(arg => {
+        argsObj[arg.name] = arg.value;
+      });
+
+      // Update the values from formData
+      Object.keys(formData).forEach(key => {
+        if (key !== undefined && formData[key] !== undefined && formData[key] !== '') {
+          argsObj[key] = formData[key]; // Update the argument's value
+        }
+      });
+
+
+      action.args = argsObj; // Assign the updated args object back to action.args
+
+
+      // Update the action in the deferredActions state
+      setDeferredActions(prevDeferredActions => {
+        let updatedDeferredActions = [...prevDeferredActions];
+        updatedDeferredActions[0].action = action;
+        return updatedDeferredActions;
+      });
+
+      // If there are more actions to review, open the modal for the next one
+      if (deferredActions.length > 1) {
+        setModalOpen(true);
+      } else {
+        setModalOpen(false);
+      }
+
+      // Execute the action and resolve the promise
+      const { handleActionExecution, resolve } = deferredActions[0];
+      await handleActionExecution(action);
+      resolve();
+
+      // Remove the action from the deferred actions list
+      setDeferredActions(prevDeferredActions => prevDeferredActions.slice(1));
+    }
+  };
+
+
+
+
   const restoreAccount = async (inputUniqueId, init = false) => {
     try {
       const response = await fetchUserBalance({
@@ -504,7 +571,6 @@ function AutoBTC({ chatMode: initialChatMode }) {
     // Call the appropriate wrapper function with the action name and args
     if (typeof wrapperFunctions[wrapperFunctionName] === "function") {
       let out = await wrapperFunctions[wrapperFunctionName](actionName, args);
-      console.log(out)
       return out
     } else {
       console.error(`Wrapper function '${wrapperFunctionName}' not found.`)
@@ -539,7 +605,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
         if (message.chat_mode === "images") {
           setAiThinking(false);
           setMessages((prevMessages) => {
-            console.log('images modddddee', message);
+            console.log('images mode', message);
             const newMessages = [...prevMessages];
             newMessages[newMessages.length - 1].text = message.answer;
             newMessages[newMessages.length - 1].sender = message.sender;
@@ -551,7 +617,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
         } else if (message.chat_mode === "normal" || message.chat_mode === "faq") {
           setAiThinking(false);
           setMessages((prevMessages) => {
-            console.log('normal modddddee', message);
+            console.log('normal mode', message);
             const newMessages = [...prevMessages];
             newMessages[newMessages.length - 1].text = message.answer;
             newMessages[newMessages.length - 1].sender = message.sender;
@@ -610,52 +676,113 @@ function AutoBTC({ chatMode: initialChatMode }) {
 
               let followUpQuestion = `Sending your question to AI together with action(s) output for further review. <p>Question asked: ${message.asked_question} <br/>`;
               let nonfollowUpResults = ``;
+              let action_output_bolt11;
               const promises = [];
 
               for (const action of actionsToExecute) {
                 const correspondingUnlockedAction = unlockedActions.find(unlockedAction => unlockedAction.name === action.name);
 
                 if (correspondingUnlockedAction) {
-                  const { wrapper_function, requires_user_approval, dangerous, ai_preprocess_function, avoid_followup } = correspondingUnlockedAction.frontend_data;
+                  //const { wrapper_function, requires_user_approval, dangerous, ai_preprocess_function, avoid_followup } = correspondingUnlockedAction.frontend_data;
+                  const { wrapper_function, requires_user_approval, dangerous, ai_preprocess_function, avoid_followup, should_review_ai_params } = correspondingUnlockedAction.frontend_data;
                   const promise = new Promise(async (resolve) => {
-
 
                     async function handleActionExecution(action, avoid_followup, ai_preprocess_function) {
                       let actionOutput;
                       let processedOutput;
-                    
+
                       try {
+                        console.log("handleActionExecution");  // Log arguments before executing action
+                        console.log(action.args);  // Log arguments before executing action
                         actionOutput = await executeAction(wrapper_function, action.name, action.args);
                         processedOutput = actionOutput;
                       } catch (error) {
                         // If there's an error, assign the error message to processedOutput
                         processedOutput = error.message;
                       }
-                    
+
                       if (ai_preprocess_function && ActionsPreprocess[ai_preprocess_function] && actionOutput) {
                         processedOutput = ActionsPreprocess[ai_preprocess_function](actionOutput);
                       }
 
+                      function printArgs(args) {
+                        if (Array.isArray(args)) {
+                          return args.join(',');
+                        } else {
+                          return Object.entries(args)
+                            .filter(([key, value]) => key !== undefined && value !== undefined)
+                            .map(([key, value]) => `${key}=${value}`)
+                            .join(', ');
+                        }
+                      }
+
+                      function jsonToHtml(json) {
+                        let html = '';
+                        for (let key in json) {
+                          if (typeof json[key] === 'object') {
+                            // Recursive call for nested objects
+                            html += `<div style="margin-left: 20px"><strong>${key}:</strong> {`;
+                            html += jsonToHtml(json[key]);
+                            html += `}</div>`;
+                          } else {
+                            html += `<div style="margin-left: 20px"><strong>${key}:</strong> ${json[key]}</div>`;
+                          }
+                        }
+                        return html;
+                      }
+                                     
+
                       if (!avoid_followup) {
-                        followUpQuestion += `${action.name}(${action.args}) action obtained:<br/> ${JSON.stringify(processedOutput)}<br/><br/>`;
+                        followUpQuestion += `${action.name}(${printArgs(action.args)}) action obtained:<br/> ${JSON.stringify(processedOutput, null, 2)}<br/><br/>`;
                         countApprovedActions += 1;
                       } else {
                         if (processedOutput !== undefined) {
-                          nonfollowUpResults += `${action.name}(${action.args}) action obtained:<br/> ${JSON.stringify(processedOutput)}<br/><br/>`;
+                          nonfollowUpResults += `${action.name}(${printArgs(action.args)}) action obtained:<br/> ${jsonToHtml(processedOutput)}<br/><br/>`;
                         }
                       }
+
+                      if (processedOutput && typeof processedOutput === 'object' && processedOutput !== null && !action_output_bolt11) {
+                        for (let value of Object.values(processedOutput)) {
+                          if (typeof value === 'string' && value.startsWith("lnbc")) {
+                            action_output_bolt11 = value;
+                            break; // stop searching once we found the value
+                          }
+                        }
+                      }
+
+                      resolve(); // Resolve the promise
                     }
 
-                    if (requires_user_approval) {
+                    if (should_review_ai_params) {
+                      // Open the modal and save the current action in the state
+                      setCurrentAction({
+                        name: action.name,
+                        args: correspondingUnlockedAction.args.map((arg, index) => ({
+                          ...arg,
+                          value: action.args[index] || '',
+                          description: correspondingUnlockedAction.args_description[index],
+                        })),
+                        frontend_data: correspondingUnlockedAction.frontend_data,
+                      });
+                      setModalOpen(true);
+                      // Add the action execution handler and promise resolve function to the deferred actions
+                      setDeferredActions(prevDeferredActions => [
+                        ...prevDeferredActions,
+                        {
+                          action,
+                          handleActionExecution: (action) => handleActionExecution(action, avoid_followup, ai_preprocess_function),
+                          resolve
+                        }
+                      ]);
+                    } else if (requires_user_approval) {
                       // Prompt the user for approval via system messages
                       askForUserApproval(action.name, dangerous, async () => {
                         await handleActionExecution(action, avoid_followup, ai_preprocess_function);
-                        resolve(); // Resolve the promise
                       });
+
                     } else {
                       // Execute the action without user approval
                       await handleActionExecution(action, avoid_followup, ai_preprocess_function);
-                      resolve(); // Resolve the promise
                     }
                   });
 
@@ -671,9 +798,14 @@ function AutoBTC({ chatMode: initialChatMode }) {
               if (nonfollowUpResults != ``) {
                 setMessages((prevMessages) => [
                   ...prevMessages,
-                  { sender: 'user', text: nonfollowUpResults },
+                  {
+                    sender: 'user',
+                    text: nonfollowUpResults,
+                    ...(action_output_bolt11 && { bolt11: action_output_bolt11 }),
+                  },
                 ]);
               }
+
             }
 
             setBalance(message.balance); // Update the balance
@@ -953,7 +1085,6 @@ function AutoBTC({ chatMode: initialChatMode }) {
     } else if (systemMode === 'connectCLNModeIP') {
       handleConnectCLNNode({ stage: 2, systemMode, setSystemMode, LNnodeIPPort, setLNnodeIPPort, LNnodeID, setLNnodeID, LNnodeRune, setLNnodeRune, messages, setMessages, userPrompt, lnConnection, setLnConnection })
     } else if (systemMode === 'connectCLNModeRune') {
-      console.log("AHB", LNnodeIPPort, LNnodeID, LNnodeRune)
       handleConnectCLNNode({ stage: 3, systemMode, setSystemMode, LNnodeIPPort, setLNnodeIPPort, LNnodeID, setLNnodeID, LNnodeRune, setLNnodeRune, messages, setMessages, userPrompt, lnConnection, setLnConnection })
       setSystemMode('');
     } else {
@@ -1363,6 +1494,16 @@ function AutoBTC({ chatMode: initialChatMode }) {
                   }}
                 />
               )}
+
+              {message.sender === 'user' && message.bolt11 && (
+                <div className="qr-container" onClick={() => copyToClipboard(message.bolt11)}>
+                  <QRCode className="qr-code" value={message.bolt11} size={200} />
+                  <div className="copy-icon-container">
+                    <FontAwesomeIcon className="copy-icon" icon={faPaste} />
+                  </div>
+                </div>
+              )}
+
               {message.sender === 'ai' && message.images && (
                 <div className="images-container">
                   {message.images.map((url) => (
@@ -1387,6 +1528,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
                 </div>
 
               )}
+
             </div>
           ))}
 
@@ -1416,6 +1558,14 @@ function AutoBTC({ chatMode: initialChatMode }) {
           <button onClick={handleSubmit}>Send</button>
         </div>
       </div>
+
+      <ParamsReviewModal
+        isOpen={modalOpen}
+        action={currentAction}
+        onConfirm={handleModalApproval}
+        onClose={handleModalClose}
+        darkMode={darkMode}
+      />
     </div>
   );
 

@@ -1,0 +1,75 @@
+/* This is your updated CSS */
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .form-box {
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 800px;
+    width: 80%;
+    background-color: #fff;
+  }
+  
+  .dark-mode .form-box {
+    background-color: #333; /* Use a dark color for dark mode */
+    color: #fff; /* Set the text color in dark mode */
+  }
+  
+  .title {
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  
+  .text-field {
+    margin-top: 15px !important; /* Increase the spacing between textboxes */
+    margin-bottom: 5px !important; /* Increase the spacing between textboxes */
+    background-color: #fff;
+    color: #000;
+  }
+  
+  .dark-mode .form-box,
+  .dark-mode .text-field {
+    background-color: #333; /* Use a dark color for dark mode */
+    color: #fff; /* Make text white in dark mode */
+  }
+  
+  .required-text-field {
+    margin-bottom: 16px;
+  }
+  
+  .optional-text-field {
+    margin-bottom: 16px;
+    background-color: #f0f0f0;
+    padding: 8px !important;
+    border-radius: 4px;
+  }
+  
+  .dark-mode .optional-text-field {
+    background-color: #333; /* Use a darker color for optional fields in dark mode */
+  }
+  
+  /* Add spacing between accordion and buttons */
+  .form-box .accordion {
+    margin-bottom: 8px;
+  }
+  
+/* Scrollable accordion details */
+.form-box .accordion-details {
+    margin-bottom: 10px;
+    overflow-y: auto;
+    max-height: calc(100vh - 500px) !important;
+  }
+  
+  
+  /* Mobile styles */
+  @media (max-width: 600px) {
+    .form-box {
+      width: 100%; /* Adjust width to fit mobile screens */
+    }
+  }
+  
+  /* Add additional mobile styles as needed */
+  

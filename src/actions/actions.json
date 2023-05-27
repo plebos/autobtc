@@ -50,7 +50,7 @@
           }, 
           {
             "name": "connect",
-            "description": "Establish a new   connection with another node in the Lightning Network.",
+            "description": "Establish a new connection with another node in the Lightning Network.",
             "category": "node",
             "args": [
               {
@@ -95,7 +95,7 @@
             ],
             "frontend_data": {
               "wrapper_function": "executeCLNCommandWrapper",
-              "requires_user_approval": true,
+              "requires_user_approval": false,
               "dangerous": true,
               "avoid_followup": true
             },
@@ -118,6 +118,7 @@
             "frontend_data": {
               "wrapper_function": "executeCLNCommandWrapper",
               "requires_user_approval": false,
+              "should_review_ai_params": true,
               "dangerous": false
             },
             "unlocked" : true
@@ -188,7 +189,8 @@
               "wrapper_function": "executeCLNCommandWrapper",
               "avoid_followup": true,
               "requires_user_approval": true,
-              "dangerous": false
+              "dangerous": false,
+              "should_review_ai_params": true
             },
             "unlocked": true
           }, 
@@ -339,7 +341,8 @@
               "wrapper_function": "executeCLNCommandWrapper",
               "requires_user_approval": true,
               "dangerous": false
-            }
+            },
+            "unlocked":true
           },
           {
             "name": "listnodes",
@@ -356,8 +359,12 @@
             "args_description": [
               "Optional node id to get information about a single node."
             ],
-            "requires_user_approval": false,
-            "dangerous": false
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "requires_user_approval": true,
+              "dangerous": false
+            },
+            "unlocked":true
           },
           {
             "name": "listpeerchannels",
