@@ -63,27 +63,6 @@
     max-height: calc(100vh - 500px) !important;
   }
   
-  /* CSS changes for better mobile responsiveness and layout */
-
-.json-to-html-output {
-    font-size: 16px;
-    line-height: 1.1; /* Set line height for better readability */
-}
-
-.json-to-html-output div {
-    margin-top: 7px;
-    margin-bottom: 0px; /* Space between each line */
-}
-
-@media (max-width: 600px) {
-    .json-to-html-output {
-        font-size: 14px; /* Smaller font for mobile devices */
-    }
-    .json-to-html-output div {
-        margin-left: 10px; /* Less indentation on mobile */
-    }
-}
-
   /* Mobile styles */
   @media (max-width: 600px) {
     .form-box {
