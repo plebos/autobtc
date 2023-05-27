@@ -2,7 +2,6 @@ import '../styles/ChatStyles.css';
 import '../styles/Dotpulse.css';
 import '../styles/SidebarStyles.css';
 import '../styles/faqstyles.css';
-import JSONFormatter from 'json-formatter-js'
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { getInitialUnlockedActions, sanitizeSatsInput } from '../utils/utils';
 import actionsData from '../actions/actions.json';
@@ -27,7 +26,7 @@ import { handleNostrExport, handleNostrExportPhase2 } from '../handlers/handleNo
 import { fetchCreateUser, fetchBalanceLimits, fetchUserBalance } from '../handlers/backendCommHandler';
 import { FAQ } from './QAtext';
 import ParamsReviewModal from './ParamsReviewModal';
-import { connected } from 'process';
+
 
 function AutoBTC({ chatMode: initialChatMode }) {
   const [placeholder, setPlaceholder] = useState("Type your question...");
