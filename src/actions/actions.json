@@ -94,6 +94,7 @@
               "A bolt11 or bolt12 string (optionally prefixed by lightning: or LIGHTNING:) as specified by the BOLT 11 and BOLT 12 specifications, or a rune as created by lightning-commando-rune(7)."
             ],
             "frontend_data": {
+              "should_review_ai_params": true,
               "wrapper_function": "executeCLNCommandWrapper",
               "requires_user_approval": false,
               "dangerous": true,

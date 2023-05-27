@@ -2,6 +2,7 @@ import '../styles/ChatStyles.css';
 import '../styles/Dotpulse.css';
 import '../styles/SidebarStyles.css';
 import '../styles/faqstyles.css';
+import JSONFormatter from 'json-formatter-js';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { getInitialUnlockedActions, sanitizeSatsInput } from '../utils/utils';
 import actionsData from '../actions/actions.json';
@@ -715,28 +716,17 @@ function AutoBTC({ chatMode: initialChatMode }) {
                         }
                       }
 
-                      function jsonToHtml(json) {
-                        let html = '';
-                        for (let key in json) {
-                          if (typeof json[key] === 'object') {
-                            // Recursive call for nested objects
-                            html += `<div style="margin-left: 20px"><strong>${key}:</strong> {`;
-                            html += jsonToHtml(json[key]);
-                            html += `}</div>`;
-                          } else {
-                            html += `<div style="margin-left: 20px"><strong>${key}:</strong> ${json[key]}</div>`;
-                          }
-                        }
-                        return html;
-                      }
+                      function formatJSON(json) {
+                        const formatter = new JSONFormatter(json, open=3);
+                        return formatter.render().outerHTML;
+                    }
                                      
-
                       if (!avoid_followup) {
                         followUpQuestion += `${action.name}(${printArgs(action.args)}) action obtained:<br/> ${JSON.stringify(processedOutput, null, 2)}<br/><br/>`;
                         countApprovedActions += 1;
                       } else {
                         if (processedOutput !== undefined) {
-                          nonfollowUpResults += `${action.name}(${printArgs(action.args)}) action obtained:<br/><div class="json-to-html-output">${jsonToHtml(processedOutput)}</div><br/><br/>`;
+                          nonfollowUpResults += `${action.name}(${printArgs(action.args)}) action obtained:<br/><div class="json-to-html-output">${formatJSON(processedOutput)}</div><br/><br/>`;
                       }                      
                       }
 

@@ -35,7 +35,6 @@ html, body {
 }
   
   .chat-messages {
-    overflow-y: auto;
     flex-grow: 1;
     padding: 16px;
     overflow-y: auto;
@@ -84,7 +83,7 @@ html, body {
     background-color: #e9e9eb;
     margin-left: 30px;
     position: relative;
-    max-width: 80%; /* Adjust this value to fit the message bubble's width */
+    max-width: 90%; /* Adjust this value to fit the message bubble's width */
     word-wrap: break-word;
   }
   
@@ -93,7 +92,7 @@ html, body {
     text-align: left;
     margin-left: 30px;
     position: relative;
-    max-width: 80%; /* Adjust this value to fit the message bubble's width */
+    max-width: 90%; /* Adjust this value to fit the message bubble's width */
     word-wrap: break-word;
   }
   
@@ -102,7 +101,7 @@ html, body {
     text-align: left;
     margin-left: 30px;
     position: relative;
-    max-width: 80%; /* Adjust this value to fit the message bubble's width */
+    max-width: 90%; /* Adjust this value to fit the message bubble's width */
     word-wrap: break-word;
   }
 
@@ -112,12 +111,12 @@ html, body {
     color: white;
     margin-left: 30px;
     position: relative;
-    max-width: 80%; /* Adjust this value to fit the message bubble's width */
-    word-wrap: break-word;
+    max-width: 90%; /* Adjust this value to fit the message bubble's width */
+    word-break: break-all !important;
+    
+  
   }
   
-
-
   .avatar {
     width: 32px;
     height: 32px;
@@ -132,8 +131,6 @@ html, body {
     color: #666;
   }
   
-
-
   .user-avatar {
     width: 32px;
     height: 32px;
@@ -559,15 +556,18 @@ html, body {
 
     /* CSS changes for better mobile responsiveness and layout */
 
-.json-to-html-output {
-  font-size: 16px;
-  line-height: 1.1; /* Set line height for better readability */
-}
 
 .json-to-html-output div {
   margin-top: 7px;
   margin-bottom: 0px; /* Space between each line */
 }
+
+.json-to-html-output {
+  max-width: 90%; /* adjust as needed */
+  font-size: 14px;
+  line-height: 1.1;
+}
+
 
 @media (max-width: 600px) {
   .json-to-html-output {
