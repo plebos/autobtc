@@ -1,3 +1,6 @@
+import moment from 'moment';
+import {determine_description, formatAccountEvents, formatAccountEventsHTML} from './bkpr_helper_functions';
+
 export function preprocess_listpeers(data) {
   const peers = data.peers;
   const processedData = [];
@@ -77,9 +80,7 @@ export function preprocess_listpeers(data) {
   return { summary, processedData };
 }
 
-  
-
-  export function preprocess_getinfo(data) {
+export function preprocess_getinfo(data) {
     const processedData = { ...data };
   
     // Replace IP addresses and ports with dummy values
@@ -109,3 +110,113 @@ export function preprocess_listpeers(data) {
     return processedData;
   }
   
+export function process_bkpr_listaccountevents_output_old(data) {
+    let totalCredit = 0;
+    let totalDebit = 0;
+    let eventCounts = {};
+    let rebalanceCount = 0;
+
+    const processedEvents = data.events.map(event => {
+      // Convert msat to Bitcoin and add to totals
+      const credit = parseInt(event.credit_msat) / 100000000000;
+      totalCredit += credit;
+      const debit = parseInt(event.debit_msat) / 100000000000;
+      totalDebit += debit;
+  
+      // Count event types
+      eventCounts[event.type] = (eventCounts[event.type] || 0) + 1;
+  
+      // Count rebalancing transactions
+      if (event.is_rebalance) {
+        rebalanceCount++;
+      }
+  
+      // Convert timestamp to human readable format
+      const timestamp = moment.unix(event.timestamp).format('YYYY-MM-DD HH:mm:ss');
+  
+      // Return processed event
+      return {
+        ...event,
+        credit: credit.toFixed(8) + ' BTC',
+        debit: debit.toFixed(8) + ' BTC',
+        timestamp: timestamp,
+        currency: 'Bitcoin'
+      };
+    });
+  
+    // Calculate net balance
+    const netBalance = totalCredit - totalDebit;
+  
+    const summary = {
+      totalEvents: processedEvents.length,
+      totalCredit: totalCredit.toFixed(8) + ' BTC',
+      totalDebit: totalDebit.toFixed(8) + ' BTC',
+      netBalance: netBalance.toFixed(8) + ' BTC',
+      eventCounts: eventCounts,
+      rebalanceCount: rebalanceCount,
+    };
+  
+    return { processedEvents, summary };
+  }
+  
+export function process_bkpr_listaccountevents_output(data) {
+    let totalCredit = 0;
+    let totalDebit = 0;
+    let eventCounts = {};
+    let rebalanceCount = 0;
+  
+    const processedEvents = data.events.map(event => {
+      // Convert msat to sats and add to totals
+      const credit = parseInt(event.credit_msat) / 1000;
+      totalCredit += credit;
+      const debit = parseInt(event.debit_msat) / 1000;
+      totalDebit += debit;
+  
+      // Count event types
+      eventCounts[event.type] = (eventCounts[event.type] || 0) + 1;
+  
+      // Count rebalancing transactions
+      if (event.is_rebalance) {
+        rebalanceCount++;
+      }
+  
+      // Convert timestamp to human readable format
+      const timestamp = moment.unix(event.timestamp).format('YYYY-MM-DD HH:mm:ss');
+  
+      // Parse description
+      let description;
+      try {
+        description = determine_description(event.description, event.type);
+      } catch (e) {
+        console.error('Failed to parse description for event: ', event);
+        description = 'Unknown';
+      }
+  
+      // Return processed event
+      return {
+        ...event,
+        credit: credit,
+        debit: debit,
+        timestamp: timestamp,
+        currency: 'BTC',
+        description: description,
+      };
+    });
+  
+    // Calculate net balance
+    const netBalance = totalCredit - totalDebit;
+  
+    const summary = {
+      totalEvents: processedEvents.length,
+      totalCredit: totalCredit.toFixed(8) + ' sats',
+      totalDebit: totalDebit.toFixed(8) + ' sats',
+      netBalance: netBalance.toFixed(8) + ' sats',
+      eventCounts: eventCounts,
+      rebalanceCount: rebalanceCount,
+    };
+  
+    const formattedTable = formatAccountEventsHTML({ processedEvents });
+    return formattedTable;
+    // return { processedEvents, summary };
+  }
+

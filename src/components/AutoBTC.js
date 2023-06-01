@@ -2,6 +2,7 @@ import '../styles/ChatStyles.css';
 import '../styles/Dotpulse.css';
 import '../styles/SidebarStyles.css';
 import '../styles/faqstyles.css';
+import '../styles/bkprstyles.css';
 import JSONFormatter from 'json-formatter-js';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import { getInitialUnlockedActions, sanitizeSatsInput } from '../utils/utils';
@@ -570,6 +571,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
   async function executeAction(wrapperFunctionName, actionName, args) {
     // Call the appropriate wrapper function with the action name and args
     if (typeof wrapperFunctions[wrapperFunctionName] === "function") {
+      console.log(`Running ${wrapperFunctionName} with ${(actionName, args)}`)
       let out = await wrapperFunctions[wrapperFunctionName](actionName, args);
       return out
     } else {
@@ -684,15 +686,22 @@ function AutoBTC({ chatMode: initialChatMode }) {
 
                 if (correspondingUnlockedAction) {
                   //const { wrapper_function, requires_user_approval, dangerous, ai_preprocess_function, avoid_followup } = correspondingUnlockedAction.frontend_data;
-                  const { wrapper_function, requires_user_approval, dangerous, ai_preprocess_function, avoid_followup, should_review_ai_params } = correspondingUnlockedAction.frontend_data;
+                  const {
+                    wrapper_function,
+                    requires_user_approval = false,
+                    dangerous = false,
+                    ai_preprocess_function,
+                    avoid_followup = false,
+                    should_review_ai_params = false,
+                    format_output_as_json = true
+                  } = correspondingUnlockedAction.frontend_data;
+                  
                   const promise = new Promise(async (resolve) => {
-
-                    async function handleActionExecution(action, avoid_followup, ai_preprocess_function) {
+                    async function handleActionExecution(action, avoid_followup, ai_preprocess_function, format_output_as_json) {
                       let actionOutput;
                       let processedOutput;
 
                       try {
-
                         console.log(action.args);  // Log arguments before executing action
                         actionOutput = await executeAction(wrapper_function, action.name, action.args);
                         processedOutput = actionOutput;
@@ -702,42 +711,45 @@ function AutoBTC({ chatMode: initialChatMode }) {
                       }
 
                       if (ai_preprocess_function && ActionsPreprocess[ai_preprocess_function] && actionOutput) {
+                        console.log("Preprocessing output")
                         processedOutput = ActionsPreprocess[ai_preprocess_function](actionOutput);
                       }
 
-                      function printArgs(args) {
-                        if (Array.isArray(args)) {
-                          return args.join(',');
-                        } else {
-                          return Object.entries(args)
-                            .filter(([key, value]) => key !== undefined && value !== undefined)
-                            .map(([key, value]) => `${key}=${value}`)
-                            .join(', ');
-                        }
+                    function printArgs(args) {
+                      if (Array.isArray(args)) {
+                        return args.join(',');
+                      } else {
+                        return Object.entries(args)
+                          .filter(([key, value]) => key !== undefined && value !== undefined)
+                          .map(([key, value]) => `${key}=${value}`)
+                          .join(', ');
                       }
+                    }
 
-                      function formatJSON(json) {
-                        const formatter = new JSONFormatter(json, open=3);
+                    function formatJSON(json) {
+                        const formatter = new JSONFormatter(json, open=4);
                         return formatter.render().outerHTML;
                     }
                                      
+                    if (processedOutput !== undefined) {
+                      let output = format_output_as_json ? (!avoid_followup ? `${JSON.stringify(processedOutput, null, 2)}` : `<div class="json-to-html-output">${formatJSON(processedOutput)}</div>`) : processedOutput;
+                      output = `${action.name}(${printArgs(action.args)}) action obtained:<br/>${output}<br/><br/>`;
                       if (!avoid_followup) {
-                        followUpQuestion += `${action.name}(${printArgs(action.args)}) action obtained:<br/> ${JSON.stringify(processedOutput, null, 2)}<br/><br/>`;
+                        followUpQuestion += output 
                         countApprovedActions += 1;
                       } else {
-                        if (processedOutput !== undefined) {
-                          nonfollowUpResults += `${action.name}(${printArgs(action.args)}) action obtained:<br/><div class="json-to-html-output">${formatJSON(processedOutput)}</div><br/><br/>`;
-                      }                      
+                        nonfollowUpResults += output
                       }
-
-                      if (processedOutput && typeof processedOutput === 'object' && processedOutput !== null && !action_output_bolt11) {
-                        for (let value of Object.values(processedOutput)) {
-                          if (typeof value === 'string' && value.startsWith("lnbc")) {
-                            action_output_bolt11 = value;
-                            break; // stop searching once we found the value
-                          }
+                    }
+                    
+                    if (processedOutput && typeof processedOutput === 'object' && processedOutput !== null && !action_output_bolt11) {
+                      for (let value of Object.values(processedOutput)) {
+                        if (typeof value === 'string' && value.startsWith("lnbc")) {
+                          action_output_bolt11 = value;
+                          break; // stop searching once we found the value
                         }
                       }
+                    }
 
                       resolve(); // Resolve the promise
                     }
@@ -759,19 +771,19 @@ function AutoBTC({ chatMode: initialChatMode }) {
                         ...prevDeferredActions,
                         {
                           action,
-                          handleActionExecution: (action) => handleActionExecution(action, avoid_followup, ai_preprocess_function),
+                          handleActionExecution: (action) => handleActionExecution(action, avoid_followup, ai_preprocess_function, format_output_as_json),
                           resolve
                         }
                       ]);
                     } else if (requires_user_approval) {
                       // Prompt the user for approval via system messages
                       askForUserApproval(action.name, dangerous, async () => {
-                        await handleActionExecution(action, avoid_followup, ai_preprocess_function);
+                        await handleActionExecution(action, avoid_followup, ai_preprocess_function, format_output_as_json);
                       });
 
                     } else {
                       // Execute the action without user approval
-                      await handleActionExecution(action, avoid_followup, ai_preprocess_function);
+                      await handleActionExecution(action, avoid_followup, ai_preprocess_function, format_output_as_json);
                     }
                   });
 
@@ -1031,7 +1043,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
       ]);
 
     } else {
-      console.log(setMessages)
+
       handleTopUp({
         uniqueId: uniqueId,
         amount_sats: amount,
@@ -1323,7 +1335,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
                   json
                 </div>
                 <div className="sidebar-button export-nostr" onClick={() => handleButtonClick(enterNostrExportMode)}>
-                  <FontAwesomeIcon icon={faFileAlt} />
+                  <CustomOstrichIcon className="sidebar-icon custom-ostrich-icon-export" />
                   <span className="icon-space"></span>
                   Nostr
                 </div>

@@ -1,0 +1,66 @@
+/* Your CSS File */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+  }
+  
+  th {
+    background-color: #007BFF; /* Change this color to fit your design */
+    color: #ffffff;
+    font-weight: bold;
+    text-align: left;
+    padding: 12px 15px;
+  }
+  
+  td {
+    padding: 12px 15px;
+    text-align: left;
+  }
+  
+  tr {
+    border-bottom: 1px solid #ccc;
+  }
+  
+  tr:nth-child(even) {
+    background-color: rgba(0, 123, 255, 0.1); /* Light blue for even rows */
+  }
+  
+  @media screen and (max-width: 600px) {
+    table, tr, td, th {
+      display: block;
+    }
+  
+    th {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+  
+    tr {
+      border-bottom: none;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+    }
+  
+    td {
+      border-bottom: 1px solid #ccc;
+      position: relative;
+      padding-left: 50%;
+    }
+  
+    td:before {
+      position: absolute;
+      left: 15px;
+      width: 45%;
+      white-space: nowrap;
+    }
+  
+    td:nth-child(1):before { content: "Type@Tag"; }
+    td:nth-child(2):before { content: "Amount"; }
+    td:nth-child(3):before { content: "Desc. Type"; }
+    td:nth-child(4):before { content: "Fee (msat)"; }
+    td:nth-child(5):before { content: "Timestamp"; }
+  }
+  

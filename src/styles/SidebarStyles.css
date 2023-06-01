@@ -303,6 +303,13 @@
   fill: white;
 }
 
+.custom-ostrich-icon-export {
+  width: 12px;
+  height: 12px;
+  stroke: white;
+  fill: white;
+}
+
 .icon-text {
   position: absolute;
   top: -24px;
@@ -360,6 +367,7 @@
     font-size: 12px;
   }
 
+
   .progress-bar-description,
   .progress-bar-labels {
     font-size: 12px;
@@ -388,6 +396,11 @@
   .custom-ostrich-icon {
     width: 18px;
     height: 18px;
+  }
+
+  .custom-ostrich-icon-export {
+    width: 12px;
+    height: 12px;
   }
 }
 

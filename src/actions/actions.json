@@ -103,6 +103,33 @@
             "unlocked":true
           }, 
           {
+            "name": "bkpr-listaccountevents",
+            "description": "Command for listing recorded bookkeeping events",
+            "category": "node",
+            "subcategory": "bookkeeping",
+            "args": [
+              {
+                "name": "account",
+                "type": "string",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "if optional parameter account is set, we only emit events for the specified account, if exists. usually isnt used"
+            ],
+            "frontend_data": {
+              "should_review_ai_params": true,
+              "wrapper_function": "executeCLNCommandWrapper",
+              "ai_preprocess_function": "process_bkpr_listaccountevents_output",
+              "format_output_as_json": false,
+              "requires_user_approval": false,
+              "dangerous": false,
+              "avoid_followup": true
+            }, 
+            "unlocked": true
+          },
+        
+          {
             "name": "feerates",
             "description": "Query recommended onchain feerates.",
             "category": "node",
@@ -122,7 +149,7 @@
               "should_review_ai_params": true,
               "dangerous": false
             },
-            "unlocked" : true
+            "unlocked" : false
           }, 
           {
             "name": "invoice",
@@ -260,7 +287,7 @@
               "requires_user_approval": true,
               "dangerous": false
             },
-            "unlocked": true
+            "unlocked": false
           }, 
           {
             "name": "listfunds",
