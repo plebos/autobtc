@@ -220,8 +220,130 @@
               "dangerous": false,
               "should_review_ai_params": true
             },
-            "unlocked": true
+            "unlocked": false
           }, 
+
+          {
+            "name": "offer",
+            "description": "Command for creating an offer/bolt12 for receiving/sending payments",
+            "category": "node",
+            "subcategory": "payments",
+            "args": [
+              {
+                "name": "amount",
+                "type": "string"
+              },
+              {
+                "name": "description",
+                "type": "string"
+              },
+              {
+                "name": "issuer",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "label",
+                "type": "string",
+                "optional": true
+                
+              },
+              {
+                "name": "quantity_max",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "absolute_expiry",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "recurrence",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "name": "recurrence_base",
+                "type": "string",
+                "optional": true
+                
+              },
+              {
+                "name": "recurrence_paywindow",
+                "type": "string",
+                "optional": true
+                
+              },
+              {
+                "name": "recurrence_limit",
+                "type": "string",
+                "optional": true
+                
+              },
+              {
+                "name": "single_use",
+                "type": "string",
+                "optional": true
+                
+              }
+            ],
+            "args_description": [
+              "The amount of the offer. It can be 'any' or a positive value in millisatoshi precision with various possible formats.",
+              "A short description of the purpose of the offer.",
+              "The entity issuing the offer.",
+              "An internal-use name for the offer.",
+              "The maximum number of items that can be included in the invoice.",
+              "The time in seconds since the first day of 1970 UTC until the offer expires.",
+              "The recurring interval for expecting invoices.",
+              "The time in seconds since the first day of 1970 UTC when the first period begins.",
+              "The pay window time for each recurring period.",
+              "The maximum number of periods.",
+              "Indicates if the offer is valid only once."
+            ],
+
+            "frontend_data": {
+              "wrapper_function": "executeCLNCommandWrapper",
+              "avoid_followup": true,
+              "requires_user_approval": true,
+              "dangerous": false,
+              "should_review_ai_params": true
+            },
+
+            "unlocked": true
+          },
+          
+          {
+            "name": "GeneratedAIQr",
+            "description": "Command for creating an ai generated qr code, sometimes called tattoo",
+            "category": "ux",
+            "args": [
+              {
+                "name": "offer",
+                "type": "string"
+              },
+              {
+                "name": "style",
+                "type": "string",
+                "optional": true
+              }
+            ],
+            "args_description": [
+              "a valid offer/bolt12 invoice",
+              "an optional style for that ai qr code invoice"
+            ],
+
+            "frontend_data": {
+              "wrapper_function": "GeneratedAIQr",
+              "avoid_followup": true,
+              "requires_user_approval": false,
+              "dangerous": false,
+              "should_review_ai_params": true
+            },
+
+            "unlocked": true
+          },
+
           {
             "name": "listchannels",
             "description": "Query active lightning channels in the entire network.",

@@ -171,6 +171,28 @@ function AutoBTC({ chatMode: initialChatMode }) {
     }
   }
 
+
+  async function GeneratedAIQr(method, params) {
+    // Check if both offer and style are missing
+    if (!params || (!params.offer && !params.style)) {
+      return { error: 'Missing required parameters' };
+    }
+  
+    const bolt12 = params.offer || '';
+    const style = params.style || '';
+    const url = `https://bolt12.tattoo/?type=bolt12&value=${encodeURIComponent(bolt12)}&option=${encodeURIComponent(style)}`;
+  
+    // Construct the JSON response
+    const jsonResponse = {
+      bolt12: bolt12,
+      style: style,
+      url: url
+    };
+  
+    return jsonResponse;
+  }
+  
+
   async function executeCLNCommandWrapper(method, params) {
     const LNNodeipPort = localStorage.getItem("LNNodeipPort");
     const LNNodeID = localStorage.getItem("LNNodeID");
@@ -564,7 +586,8 @@ function AutoBTC({ chatMode: initialChatMode }) {
 
   const wrapperFunctions = {
     executeCLNCommandWrapper: executeCLNCommandWrapper,
-    changeModeWrapper: changeModeWrapper
+    changeModeWrapper: changeModeWrapper,
+    GeneratedAIQr: GeneratedAIQr
     // Add other wrapper functions here as needed
   };
 
@@ -744,7 +767,7 @@ function AutoBTC({ chatMode: initialChatMode }) {
                     
                     if (processedOutput && typeof processedOutput === 'object' && processedOutput !== null && !action_output_bolt11) {
                       for (let value of Object.values(processedOutput)) {
-                        if (typeof value === 'string' && value.startsWith("lnbc")) {
+                        if (typeof value === 'string' && (value.startsWith("lnbc") || value.startsWith("lno"))) {
                           action_output_bolt11 = value;
                           break; // stop searching once we found the value
                         }
