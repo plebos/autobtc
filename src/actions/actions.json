@@ -220,7 +220,7 @@
               "dangerous": false,
               "should_review_ai_params": true
             },
-            "unlocked": false
+            "unlocked": true
           }, 
 
           {
